@@ -228,56 +228,114 @@
     return "IN";
   }
 
-  // ===== Title builder (less nonsense) =====
-  const TITLE_MODIFIERS = [
-    "THE LAST","THE QUIET","THE EMPTY","THE BLUE","THE BROKEN","THE FADING","THE SECOND",
-    "THE SOFT","THE COLD","THE SILENT","THE OPEN","THE CLOSED","THE FINAL","THE THIN"
-  ];
-  const TITLE_NOUNS = [
-    "BENCH","RECEIPT","LETTER","JACKET","POSTER","CLOCK","MAP","SIGNAL","WINDOW",
-    "RETURN DATE","GATE","HALLWAY","STAIRWELL","FIRE ESCAPE","BOOK DROP","AISLE",
-    "SHELF","VENDING MACHINE","PROJECTOR HUM","WHITE SHEET","BACK FIELD","PORCH LIGHT",
-    "MILE MARKER","TURNAROUND","WAITING ROOM","IV DRIP","PINE ROAD","EMPTY FIELD"
-  ];
+// ===== Title builder (setting-bound, less random) =====
+const TITLE_MODIFIERS = [
+  "THE LAST","THE QUIET","THE EMPTY","THE BLUE","THE BROKEN","THE FADING","THE SECOND",
+  "THE SOFT","THE COLD","THE SILENT","THE OPEN","THE CLOSED","THE FINAL","THE THIN"
+];
 
-  // These are *locations* that can sensibly follow a preposition.
-  const PLACE_TAILS = [
-    "THE FIRE ESCAPE","THE STAIRWELL","THE HALLWAY","THE BACK FIELD","THE COMMUNITY CENTRE",
-    "THE PARKING LOT","THE LAST STOP","THE RETURN DESK","THE BOOK DROP","THE STACKS",
-    "THE EMPTY AISLE","THE BACK OFFICE","THE GAS STATION","THE REST STOP","THE HIGHWAY",
-    "THE TERMINAL","GATE 12","THE DEPARTURES BOARD","THE LOBBY","PINE ROAD","THE PORCH"
-  ];
+// Title nouns now live *inside* a setting world.
+const TITLE_NOUNS_BY_SETTING = {
+  airport: [
+    "GATE 12","DEPARTURES BOARD","BOARDING PASS","LOST LUGGAGE","LAST ANNOUNCEMENT",
+    "SECURITY LINE","CONNECTION","TERMINAL WINDOW","RETURN TICKET"
+  ],
+  diner: [
+    "LAST ORDER","COFFEE CUP","COUNTER SEAT","NEON SIGN","COLD FRIES",
+    "RECEIPT","BACK BOOTH","SUGAR PACKET"
+  ],
+  library: [
+    "LIBRARY CARD","RETURN DATE","BOOK DROP","LAST CHECKOUT","DUE NOTICE",
+    "FINAL READING","STACKS","SIGN-IN SHEET"
+  ],
+  bookstore: [
+    "EMPTY AISLE","DUST ON THE SHELF","BLUE PAPERBACK","LAST RECEIPT","USED HARDCOVER",
+    "SALE SIGN","CLOSING BOX","BOOK JACKET","CASH DRAWER"
+  ],
+  bus: [
+    "LAST STOP","TRANSFER","WINDOW SEAT","NIGHT ROUTE","SCHEDULE CARD",
+    "DRIVER'S MIRROR","EMPTY ROW","FARE BOX"
+  ],
+  hospital: [
+    "NIGHT SHIFT","IV DRIP","CHART","WAITING ROOM","HAND SOAP",
+    "CALL BUTTON","EMPTY BED","DISCHARGE PAPER"
+  ],
+  apartment: [
+    "HALLWAY","STAIRWELL","PORCH LIGHT","LOCKED DOOR","FIRE ESCAPE",
+    "BUZZER","LAUNDRY ROOM","BREAKER BOX"
+  ],
+  outdoor: [
+    "WHITE SHEET","PROJECTOR HUM","FOLDING CHAIR","LAST SCREEN","POWER CORD",
+    "SOUND CHECK","BACK ROW","ANNOUNCEMENT MIC"
+  ],
+  roadtrip: [
+    "MILE MARKER","GAS STATION","REST STOP","LONG HIGHWAY","DASHBOARD LIGHT",
+    "ROAD MAP","TOLL RECEIPT","TURNAROUND"
+  ],
+  smalltown: [
+    "MISSING POSTER","PINE ROAD","EMPTY FIELD","PORCH LIGHT","BLUE BENCH",
+    "OLD CLOCK","BUS STOP","GARAGE LIGHTS"
+  ],
+  onecam: [
+    "FINAL TAKE","ECHO ROOM","UNPUBLISHED","MIRROR TALK","STATIC",
+    "TIME CODE","CUT","FRAME"
+  ],
+  laundromat: [
+    "SPIN CYCLE","CHANGE MACHINE","LOST SOCK","LAST DRYER","SOAP DISPENSER",
+    "FOLDING TABLE","CYCLE TIMER","DROP COIN"
+  ]
+};
 
-  const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
+// Tails are also setting-specific so you don't get "IN THE PROJECTOR" nonsense.
+const PLACE_TAILS_BY_SETTING = {
+  airport: ["THE TERMINAL","GATE 12","THE DEPARTURES BOARD","SECURITY","THE ARRIVALS HALL"],
+  diner: ["THE COUNTER","THE BACK BOOTH","THE PARKING LOT","THE KITCHEN DOOR"],
+  library: ["THE STACKS","THE RETURN DESK","THE FRONT DOOR","THE READING ROOM"],
+  bookstore: ["THE EMPTY AISLE","THE BACK OFFICE","THE SALE TABLE","THE WINDOW DISPLAY"],
+  bus: ["THE LAST STOP","THE BACK ROW","THE WINDOW","THE DEPOT"],
+  hospital: ["THE HALLWAY","THE NURSES' STATION","THE WAITING ROOM","THE SUPPLY CLOSET"],
+  apartment: ["THE STAIRWELL","THE HALLWAY","THE LOBBY","THE FIRE ESCAPE"],
+  outdoor: ["THE COMMUNITY CENTRE","THE BACK LOT","THE SCREEN","THE FOLDING CHAIRS"],
+  roadtrip: ["THE GAS STATION","THE REST STOP","THE HIGHWAY","THE PARKING SHOULDER"],
+  smalltown: ["PINE ROAD","THE PORCH","THE TOWN HALL","THE EMPTY FIELD"],
+  onecam: ["THE FRAME","THE EDIT","THE CUT","THE MONITOR"],
+  laundromat: ["THE FOLDING TABLE","THE CHANGE MACHINE","THE EXIT","THE BACK WALL"]
+};
 
-  function makeTitle(){
-    const mod = pick(TITLE_MODIFIERS);
-    const noun = pick(TITLE_NOUNS);
+const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
 
-    // Core title
-    let title = `${mod} ${noun}`;
+function makeTitle(settingKey){
+  const mod = pick(TITLE_MODIFIERS);
 
-    // Optional tail (time or place)
-    if (chance(0.62)){
-      if (chance(0.42)){
-        const t = pick(TIME_TAILS);
-        title = `${title} ${timePrep(t)} ${t}`;
-      } else {
-        const prep = pick(["IN","AT","BEHIND","NEAR","UNDER","OUTSIDE"]);
-        const place = pick(PLACE_TAILS);
-        // avoid "IN GATE 12" (prefer AT)
-        let p = prep;
-        if (place === "GATE 12" && prep === "IN") p = "AT";
-        title = `${title} ${p} ${place}`;
-      }
+  const nouns = TITLE_NOUNS_BY_SETTING[settingKey] || ["RECEIPT","WINDOW","SIGNAL","BENCH"];
+  const noun = pick(nouns);
+
+  // Core title
+  let title = `${mod} ${noun}`;
+
+  // Optional tail (time or place) — chosen from setting-appropriate lists.
+  if (chance(0.62)){
+    if (chance(0.42)){
+      const t = pick(TIME_TAILS);
+      title = `${title} ${timePrep(t)} ${t}`;
+    } else {
+      const prep = pick(["IN","AT","BEHIND","NEAR","UNDER","OUTSIDE"]);
+      const places = PLACE_TAILS_BY_SETTING[settingKey] || ["THE HALLWAY","THE PARKING LOT"];
+      const place = pick(places);
+
+      let p = prep;
+      if (place === "GATE 12" && prep === "IN") p = "AT";
+      title = `${title} ${p} ${place}`;
     }
-
-    title = dedupeWordRuns(title)
-      .replace(/\bTHE\s+THE\b/gi, "THE")
-      .replace(/\bIN\s+GATE 12\b/gi, "AT GATE 12");
-
-    return upperTitleCase(title);
   }
+
+  title = dedupeWordRuns(title)
+    .replace(/\bTHE\s+THE\b/gi, "THE")
+    .replace(/\bIN\s+GATE 12\b/gi, "AT GATE 12");
+
+  return upperTitleCase(title);
+}
+
 
   // ===== Genres =====
   const GENRES = {
@@ -723,7 +781,7 @@
         const year = pickYear(eraBias);
         const runtime = runtimeFor(genre);
 
-        const title = makeTitle();
+        const title = makeTitle(setting.key);
 
         const chars = pick(CHARACTERS[setting.key]);
         const prob  = pick(PROBLEMS[setting.key]);
