@@ -28,7 +28,7 @@
     .sub {
       margin: 0;
       color: #bbb;
-      max-width: 70ch;
+      max-width: 80ch;
     }
     .panel {
       display: grid;
@@ -37,13 +37,14 @@
       margin-top: 16px;
     }
     @media (min-width: 860px) {
-      .panel { grid-template-columns: 320px 1fr; }
+      .panel { grid-template-columns: 340px 1fr; }
     }
     .card {
       border: 1px solid #333;
       border-radius: 12px;
       padding: 14px;
       background: #1a1a1a;
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
     }
     .row {
       display: grid;
@@ -51,7 +52,7 @@
       gap: 10px;
     }
     label { font-size: 0.9rem; color: #ccc; }
-    input, select, textarea, button {
+    input, select, button {
       font: inherit;
       padding: 10px;
       border: 1px solid #444;
@@ -59,7 +60,6 @@
       background: #222;
       color: #eee;
     }
-    textarea { min-height: 110px; resize: vertical; }
     button {
       cursor: pointer;
       background: #eee;
@@ -79,7 +79,6 @@
       font-size: 0.95rem;
       color: #ddd;
     }
-    .hr { height: 1px; background: #333; margin: 12px 0; }
     .pill {
       display: inline-block;
       padding: 2px 8px;
@@ -88,6 +87,7 @@
       font-size: 0.78rem;
       color: #aaa;
       background: #222;
+      margin-left: 6px;
     }
   </style>
 </head>
@@ -115,22 +115,14 @@
           <div>
             <label for="tone">Catalogue bias</label>
             <select id="tone">
-              <option value="default" selected>Default (mostly drama)</option>
-              <option value="lessDrama">Less drama (more variety)</option>
-              <option value="maxBeige">Max existential beige</option>
+              <option value="house" selected>House style (indie drama)</option>
+              <option value="festival">Festival weird (more experimental)</option>
+              <option value="lighter">Slightly lighter (more PG/PG)</option>
             </select>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px;">
-          <div>
-            <label for="ratingMode">Rating mode</label>
-            <select id="ratingMode">
-              <option value="auto" selected>Auto by genre</option>
-              <option value="any">Anything goes</option>
-              <option value="family">Family-friendly bias</option>
-            </select>
-          </div>
           <div>
             <label for="yearMode">Year range</label>
             <select id="yearMode">
@@ -140,11 +132,10 @@
               <option value="tens">2010–2012</option>
             </select>
           </div>
-        </div>
-
-        <div style="margin-top:10px;">
-          <label for="seed">Optional seed</label>
-          <input id="seed" type="text" placeholder="arkon-quiet-bus" />
+          <div>
+            <label for="seed">Optional seed</label>
+            <input id="seed" type="text" placeholder="arkon-quiet-bus" />
+          </div>
         </div>
 
         <div class="btns" style="margin-top:12px;">
@@ -162,6 +153,7 @@
   </main>
 
 <script>
+/* ---------- RNG (seedable) ---------- */
 function hashStringToUint32(str) {
   let h = 2166136261 >>> 0;
   for (let i = 0; i < str.length; i++) {
@@ -179,73 +171,259 @@ function mulberry32(seed) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-function randFloat(rng) { return rng ? rng() : Math.random(); }
-function pick(arr, rng) { return arr[Math.floor(randFloat(rng) * arr.length)]; }
-function chance(p, rng) { return randFloat(rng) < p; }
+function r(rng) { return rng ? rng() : Math.random(); }
+function pick(arr, rng) { return arr[Math.floor(r(rng) * arr.length)]; }
+function chance(p, rng) { return r(rng) < p; }
+function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
-const GENRES = [
-  "Drama","Drama / Romance","Drama / Mystery","Drama / Thriller",
-  "Drama / Comedy","Drama / Experimental","Animated / Drama","Action / Drama"
+/* ---------- House-style data ---------- */
+
+// Character templates carry correct grammar (no “A two siblings waits” ever again).
+const CHARACTERS = [
+  { tag: "waitress", line: "Lonely waitress.", perspective: "she" },
+  { tag: "drifter", line: "Drifter arrives.", perspective: "he" },
+  { tag: "young_woman", line: "Young woman.", perspective: "she" },
+  { tag: "teen", line: "Teen.", perspective: "they" },
+  { tag: "divorced_couple", line: "Divorced couple.", perspective: "they" },
+  { tag: "father_son", line: "Father and son.", perspective: "they" },
+  { tag: "two_siblings", line: "Two siblings.", perspective: "they" },
+  { tag: "radio_host", line: "Late-night radio host.", perspective: "he" },
+  { tag: "sub_teacher", line: "Substitute teacher.", perspective: "he" },
+  { tag: "elderly_neighbor", line: "Elderly neighbor.", perspective: "they" },
+  { tag: "strangers", line: "Strangers.", perspective: "they" },
+  { tag: "landlord", line: "Strange landlord.", perspective: "they" },
 ];
 
-const RATINGS = ["G","PG","PG-13","R"];
-
-const SETTING = [
-  "small apartment","bus stop","airport","hospital","diner","used bookstore",
-  "park bench","garage","clock shop","factory","beach house","library","car at night"
-];
-
-const CHARACTER = [
-  "young woman","middle-aged man","divorced couple","father and son",
-  "two siblings","strangers","delivery driver","radio host",
-  "substitute teacher","nervous teen","elderly neighbor","local man"
+const SETTINGS = [
+  "Small town.",
+  "Apartment building.",
+  "Bus stop.",
+  "Airport at night.",
+  "Hospital corridor.",
+  "Diner after midnight.",
+  "Used bookstore.",
+  "Park bench.",
+  "Garage.",
+  "Library closing.",
+  "Beach house.",
+  "Empty field outside town.",
 ];
 
 const BEATS = [
-  "long conversation about regrets",
-  "awkward small talk turns personal",
-  "quiet argument in a kitchen",
-  "power goes out and people talk in the dark",
-  "a reunion that feels wrong",
-  "a near encounter that goes nowhere"
+  "They talk about life and missed chances.",
+  "Awkward small talk turns personal.",
+  "People whisper about what they saw but won’t say it out loud.",
+  "Long dinner scene. No one says what they mean.",
+  "Power outage. Conversations in the dark.",
+  "Arguments that start small and get mean.",
+  "Phone call keeps dropping. Misunderstandings grow.",
+  "A letter arrives. Nobody admits who sent it.",
+  "Locked door. Everyone pretends it is normal.",
+  "Long silent shots. Someone stares at nothing.",
+];
+
+const OBJECTS = [
+  "Jacket found near the road.",
+  "Abandoned bicycle in a tree.",
+  "Broken kite string.",
+  "Old clock that won’t stay quiet.",
+  "Voice memo recorded too many times.",
+  "Bus ticket folded in a wallet.",
+  "Key that does not fit any lock.",
+  "Photo with someone cut out.",
 ];
 
 const ENDINGS = [
-  "They leave before morning.",
-  "Nothing is resolved.",
+  "They kiss. He leaves before morning.",
+  "Storm hits. Town survives. Nothing feels fixed.",
+  "She escapes.",
+  "He is mistaken.",
   "They stop trying.",
-  "He returns to work.",
-  "She moves out.",
-  "The lights go out."
+  "Emotional breakthrough in the car.",
+  "Someone drives away crying.",
+  "The lights go out.",
+  "They smile anyway.",
+  "Sad ending.",
+];
+
+// Genre pool tuned to your company description.
+const GENRES_HOUSE = [
+  "Drama",
+  "Drama / Romance",
+  "Drama / Mystery",
+  "Drama / Thriller",
+  "Drama / Comedy / Experimental",
+  "Drama / Experimental",
+  "Animated / Drama",
+  "Action / Drama" // rare
+];
+
+function weightedGenre(tone, rng) {
+  // Heavily weight drama and adjacent, keep “Action / Drama” rare.
+  const base = tone === "festival"
+    ? [
+        "Drama","Drama","Drama / Experimental","Drama / Experimental",
+        "Drama / Comedy / Experimental","Animated / Drama","Drama / Mystery",
+        "Drama / Thriller","Drama / Romance","Action / Drama"
+      ]
+    : tone === "lighter"
+    ? [
+        "Drama","Drama","Drama","Drama / Romance","Drama / Comedy / Experimental",
+        "Animated / Drama","Drama / Mystery","Drama / Thriller"
+      ]
+    : [
+        "Drama","Drama","Drama","Drama / Romance","Drama / Mystery","Drama / Thriller",
+        "Drama / Experimental","Animated / Drama","Drama / Comedy / Experimental",
+        "Action / Drama"
+      ];
+
+  return pick(base, rng);
+}
+
+function ratingFor(genre, tone, rng) {
+  // Keep it plausible and aligned with “non-theatrical community screenings”.
+  const familyBias = (tone === "lighter");
+  const isAnimated = genre.includes("Animated");
+  const isThriller = genre.includes("Thriller");
+  const isExperimental = genre.includes("Experimental");
+
+  if (familyBias) {
+    if (isThriller) return chance(0.7, rng) ? "PG-13" : "PG";
+    if (isAnimated) return chance(0.75, rng) ? "G" : "PG";
+    if (isExperimental) return chance(0.7, rng) ? "PG" : "PG-13";
+    return chance(0.65, rng) ? "PG" : "G";
+  }
+
+  if (isThriller) return chance(0.55, rng) ? "R" : "PG-13";
+  if (isAnimated) return chance(0.6, rng) ? "PG" : "G";
+  if (isExperimental) return chance(0.65, rng) ? "PG" : "PG-13";
+  return pick(["PG","PG-13","PG-13","R"], rng);
+}
+
+function yearFromMode(mode, rng) {
+  let lo = 1995, hi = 2012;
+  if (mode === "nineties") { lo = 1995; hi = 1999; }
+  if (mode === "aughts") { lo = 2000; hi = 2009; }
+  if (mode === "tens") { lo = 2010; hi = 2012; }
+  return lo + Math.floor(r(rng) * (hi - lo + 1));
+}
+
+function runtimeFromGenre(genre, rng) {
+  // Mostly feature-length, some festival odd-length entries.
+  const isExperimental = genre.includes("Experimental");
+  const shortish = isExperimental && chance(0.45, rng);
+  if (shortish) return 38 + Math.floor(r(rng) * 18); // 38–55
+  return 87 + Math.floor(r(rng) * 18); // 87–104
+}
+
+/* Titles: closer to your catalogue tone */
+const TITLE_FORMS = [
+  () => `THE ${pick(["BLUE","EMPTY","LAST","OLD","NEW","WAITING","QUIET","LONG","BROKEN","FADING"], null)} ${pick(["BENCH","FIELD","BUS","SIGNAL","WEEKEND","LIBRARY DAY","CLOCK SHOP","WAITING ROOM","WINDOW SEAT","PAPER BOAT"], null)}`,
+  () => `${pick(["MIDNIGHT","AUTUMN","WINTER","SUMMER","APRIL"], null)} ${pick(["AT","ON","IN","BEFORE","AFTER"], null)} ${pick(["CARSON’S DINER","PINE ROAD","THE BUS STOP","THE OLD CLOCK SHOP","THE WAITING ROOM","THE GARAGE"], null)}`,
+  () => `${pick(["WHEN THE LIGHTS GO OUT","ROOM FOR RENT","SILENT PARTNERS","SECOND CHANCES","RUNNING LATE","FINDING NORTH","OUT OF THE BLUE","ECHO ROOM","MIRROR TALK","STATIC"], null)}`,
 ];
 
 function makeTitle(rng) {
-  const parts = [
-    pick(["The","A","Midnight","Winter","Summer","April"], rng),
-    pick(["Last","Quiet","Empty","Blue","Waiting","Broken"], rng),
-    pick(["Bus","Bench","Signal","Field","Room","Library","Weekend"], rng)
-  ];
-  return parts.join(" ");
+  const raw = pick(TITLE_FORMS, rng)();
+  // Keep uppercase “THE …” style common in your catalogue; otherwise leave as given.
+  return raw.replace(/\s+/g, " ").trim();
 }
 
 function makeSynopsis(genre, rng) {
-  const s = [];
-  s.push(`One night.`);
-  s.push(`A ${pick(CHARACTER, rng)} waits in a ${pick(SETTING, rng)}.`);
-  s.push(`${pick(BEATS, rng)}.`);
-  if (genre.includes("Romance")) {
-    s.push(`They talk about what might have been.`);
+  // Your style: short fragments, each sentence capitalized, clipped, emotionally flat.
+  const c1 = pick(CHARACTERS, rng);
+  const c2 = chance(0.45, rng) ? pick(CHARACTERS, rng) : null;
+
+  const lines = [];
+  lines.push(pick(SETTINGS, rng));
+  lines.push(c1.line);
+
+  if (c2 && c2.tag !== c1.tag) {
+    // Second character arrives / is present.
+    lines.push(pick(["Someone arrives.", "They meet by accident.", "A stranger sits nearby.", "They run into each other."], rng));
   }
-  s.push(pick(ENDINGS, rng));
-  return s.join(" ");
+
+  if (chance(0.6, rng)) lines.push(pick(OBJECTS, rng));
+
+  // Genre flavour
+  if (genre.includes("Mystery")) {
+    lines.push("Something is missing.");
+    lines.push(pick([
+      "Brother searches.",
+      "People whisper.",
+      "Nobody says it out loud.",
+      "A jacket is found."
+    ], rng));
+  } else if (genre.includes("Thriller")) {
+    lines.push("Noises at night.");
+    lines.push(pick([
+      "Locked basement.",
+      "He watches the neighbor.",
+      "The door stays closed.",
+      "He calls the police."
+    ], rng));
+  } else if (genre.includes("Romance")) {
+    lines.push(pick([
+      "They talk about what might have been.",
+      "Awkward dinner.",
+      "They remember the past.",
+      "A kiss that feels like a mistake."
+    ], rng));
+  } else if (genre.includes("Comedy")) {
+    lines.push(pick([
+      "Awkward dates.",
+      "A joke that doesn’t land.",
+      "They laugh once, then stop.",
+      "Someone overshares."
+    ], rng));
+  } else if (genre.includes("Experimental")) {
+    lines.push(pick([
+      "Long silent shots.",
+      "Monologues.",
+      "One actor plays multiple roles.",
+      "Scenes repeat with small changes."
+    ], rng));
+  } else if (genre.includes("Action")) {
+    // Still low-stakes, like your “Detour/Low Speed” vibe.
+    lines.push(pick([
+      "He thinks he is being followed.",
+      "Wrong route.",
+      "Several near encounters.",
+      "No confrontation."
+    ], rng));
+  } else if (genre.includes("Animated")) {
+    lines.push(pick([
+      "Simple drawings.",
+      "Soft colours.",
+      "Gentle animation.",
+      "Minimal dialogue."
+    ], rng));
+  } else {
+    lines.push(pick(BEATS, rng));
+  }
+
+  lines.push(pick(ENDINGS, rng));
+
+  // Keep it tight: 5–8 fragments max, like your official summaries.
+  const max = 5 + Math.floor(r(rng) * 4); // 5–8
+  const finalLines = lines.slice(0, max);
+
+  // Ensure every fragment is cleanly capitalized and ends with a period.
+  return finalLines.map(s => {
+    let t = s.trim();
+    if (!t) return t;
+    t = t[0].toUpperCase() + t.slice(1);
+    if (!/[.!?]$/.test(t)) t += ".";
+    return t;
+  }).join(" ");
 }
 
-function generateFilm(rng) {
+function generateFilm(tone, yearMode, rng) {
   const title = makeTitle(rng);
-  const year = 1995 + Math.floor(randFloat(rng) * 18);
-  const genre = pick(GENRES, rng);
-  const runtime = 86 + Math.floor(randFloat(rng) * 20);
-  const rating = pick(RATINGS, rng);
+  const year = yearFromMode(yearMode, rng);
+  const genre = weightedGenre(tone, rng);
+  const runtime = runtimeFromGenre(genre, rng);
+  const rating = ratingFor(genre, tone, rng);
   const synopsis = makeSynopsis(genre, rng);
   return { title, year, runtime, genre, rating, synopsis };
 }
@@ -258,15 +436,30 @@ Rating: ${f.rating}
 “${f.synopsis}”`;
 }
 
+/* ---------- UI wiring ---------- */
 document.getElementById("btnGen").onclick = () => {
-  const n = parseInt(document.getElementById("count").value || "5", 10);
-  const seed = document.getElementById("seed").value.trim();
-  const rng = seed ? mulberry32(hashStringToUint32(seed)) : null;
+  const n = clamp(parseInt(document.getElementById("count").value || "5", 10), 1, 50);
+  const tone = document.getElementById("tone").value;
+  const yearMode = document.getElementById("yearMode").value;
+
+  const seedStr = document.getElementById("seed").value.trim();
+  const rng = seedStr ? mulberry32(hashStringToUint32(seedStr)) : null;
 
   const films = [];
-  for (let i = 0; i < n; i++) films.push(generateFilm(rng));
-  document.getElementById("out").textContent =
-    "Available Film Catalogue\n\n" + films.map(formatFilm).join("\n\n");
+  const seen = new Set();
+  let guard = 0;
+
+  // Avoid duplicate titles so output feels curated, not spammy.
+  while (films.length < n && guard < 500) {
+    guard++;
+    const f = generateFilm(tone, yearMode, rng);
+    if (seen.has(f.title)) continue;
+    seen.add(f.title);
+    films.push(f);
+  }
+
+  const header = `Available Film Catalogue\n\n`;
+  document.getElementById("out").textContent = header + films.map(formatFilm).join("\n\n");
   document.getElementById("btnCopy").disabled = false;
 };
 
@@ -275,8 +468,12 @@ document.getElementById("btnClear").onclick = () => {
   document.getElementById("btnCopy").disabled = true;
 };
 
-document.getElementById("btnCopy").onclick = () => {
-  navigator.clipboard.writeText(document.getElementById("out").textContent);
+document.getElementById("btnCopy").onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(document.getElementById("out").textContent);
+  } catch {
+    // ignore
+  }
 };
 </script>
 </body>
