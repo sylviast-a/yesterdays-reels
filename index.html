@@ -17,6 +17,10 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
+
+    /* Kill accidental horizontal scrollbars */
+    html, body { width:100%; overflow-x:hidden; }
+
     body{
       margin:0;
       font-family:var(--sans);
@@ -35,25 +39,32 @@
       .wrap{grid-template-columns: 420px 1fr;}
     }
     header{grid-column:1 / -1;}
-    h1{margin:0 0 6px; font-size:20px; letter-spacing:.2px;}
-    .tagline{
+    h1{margin:0 0 10px; font-size:20px; letter-spacing:.2px;}
+
+    .company{
       margin:0;
       color:var(--muted);
       font-size:13px;
-      line-height:1.35;
+      line-height:1.45;
       max-width:92ch;
+      white-space:normal;
     }
+    .company p{ margin:0 0 8px; }
+    .company p:last-child{ margin-bottom:0; }
+
     .card{
       background: var(--panel);
       border:1px solid var(--line);
       border-radius:14px;
       padding:14px;
       box-shadow: 0 12px 30px rgba(0,0,0,.30);
+      min-width:0; /* prevent grid overflow */
     }
     .card h2{margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
+
     label{font-size:12px; color:var(--muted); display:block; margin:10px 0 6px;}
     input, select, button, textarea{font:inherit}
-    input[type="number"], select{
+    input[type="number"]{
       width:100%;
       background: var(--panel2);
       color: var(--text);
@@ -62,8 +73,40 @@
       padding:10px;
       outline:none;
     }
+
+    /* Genre “menu” */
+    .genre-menu{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:6px;
+    }
+    .chip{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip[aria-pressed="true"]{
+      border-color: rgba(200,168,255,.55);
+      background: rgba(200,168,255,.18);
+    }
+
     .row{display:flex; gap:10px; flex-wrap:wrap;}
     .row > div{flex:1; min-width:140px;}
+    select{
+      width:100%;
+      background: var(--panel2);
+      color: var(--text);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px;
+      outline:none;
+    }
     .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
     button{
       cursor:pointer;
@@ -93,7 +136,9 @@
       font-size:12.5px;
       line-height:1.45;
       outline:none;
-      white-space:pre;
+      white-space:pre-wrap;   /* no horizontal scroll inside output */
+      word-break:break-word;  /* just in case */
+      overflow-wrap:anywhere;
     }
     .note{
       margin-top:8px;
@@ -109,9 +154,11 @@
   <div class="wrap">
     <header>
       <h1>Yesterday's Reels — Catalogue Generator</h1>
-      <p class="tagline">
-        Generates plausible catalogue entries for a boutique film licensing collection: overlooked indie dramas, festival films that never received proper distribution, and oddball DVD-era titles—character-driven, emotionally realistic, and quietly doomed.
-      </p>
+      <div class="company">
+        <p>Yesterday's Reels is a boutique film licensing company that specializes in curating and distributing the best of overlooked cinema. We believe that every film deserves an audience, regardless of budget, release history, or critical reception.</p>
+        <p>We have the best collection of forgotten indie dramas, festival films that never received proper distribution, and exclusive DVD titles from the 90s and early 2000s. We hold the exclusive public screening rights to over 50 titles, available for community events, festivals, private organizations, retro cinemas, or outdoor movie nights.</p>
+        <p>Our catalogue is diverse, but we like to focus on character-driven stories, unique narratives, and films that prioritize emotional realism rather than over-the-top production.</p>
+      </div>
     </header>
 
     <section class="card">
@@ -120,6 +167,13 @@
       <label for="count">How many entries (1–10)</label>
       <input id="count" type="number" min="1" max="10" value="5" />
 
+      <label>Genre bias</label>
+      <div class="genre-menu" role="group" aria-label="Genre bias">
+        <div class="chip" id="chip-drama" aria-pressed="true" tabindex="0">Drama-heavy (on brand)</div>
+        <div class="chip" id="chip-mix" aria-pressed="false" tabindex="0">More variety</div>
+        <div class="chip" id="chip-experimental" aria-pressed="false" tabindex="0">More experimental</div>
+      </div>
+
       <div class="row">
         <div>
           <label for="era">Year range bias</label>
@@ -127,14 +181,6 @@
             <option value="classic">Mostly 1995–2005</option>
             <option value="mixed">Mixed</option>
             <option value="modern">More 2006–2012</option>
-          </select>
-        </div>
-        <div>
-          <label for="genreBias">Genre bias</label>
-          <select id="genreBias">
-            <option value="drama">Drama-heavy (on brand)</option>
-            <option value="mix">More variety</option>
-            <option value="experimental">More experimental</option>
           </select>
         </div>
       </div>
@@ -162,7 +208,6 @@
   function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
   function chance(p){ return Math.random() < p; }
   function capSentence(s){
-    // Capitalize first letter after quotes or start; keep the rest as-is.
     return s.replace(/(^|[“"]\s*)([a-z])/g, (m, a, b) => a + b.toUpperCase());
   }
   function dedupeWordRuns(s){
@@ -172,7 +217,6 @@
     return String(s).trim().replace(/^(THE|A|AN)\s+/i, "").trim();
   }
   function upperTitleCase(s){
-    // Force titles to all caps like your list, but with sane whitespace.
     return String(s).replace(/\s+/g," ").trim().toUpperCase();
   }
 
@@ -213,7 +257,7 @@
     return upperTitleCase(title);
   }
 
-  // ===== Data (bigger to reduce repeats) =====
+  // ===== Genre sets =====
   const GENRES = {
     drama: [
       "Drama","Drama","Drama","Drama",
@@ -252,7 +296,6 @@
     { key:"laundromat", line:"Late-night laundromat.", tails:["CHANGE MACHINE","SPIN CYCLE","DRYER 7","PLASTIC CHAIR","SOAP DISPENSER","FRONT WINDOW"] }
   ];
 
-  // Characters / problems / actions / endings are keyed so they don't clash with setting.
   const CHARACTERS = {
     airport: [
       "A parent travelling alone and a seatmate who asks too many questions",
@@ -601,20 +644,17 @@
     ]
   };
 
-  // For base title parts (lots of options = fewer repeats)
   const BASE_LEFT = [
     "APRIL","WINTER","QUIET","LAST","EMPTY","FADING","BROKEN","BLUE","SECOND","RETURN","STATIC",
     "LOW","SOFT","MISSING","BACK","THIN","COLD","WIDE","SILENT","OPEN","CLOSED","FINAL","DUST",
     "PORCH","HALLWAY","RECEIPT","LETTER","PROJECTOR","VENDING","LIBRARY","GATE","WINDOW","PAPER",
     "KITE","GARAGE","BENCH","SIGNAL","MAP","ORDER","DRIVER","TURNAROUND","FIELD","PINE"
   ];
-
   const BASE_RIGHT = [
     "LIGHT","MACHINE","HUM","CARD","TICKET","DATE","AISLE","SHELF","CLOCK","STRING","CHAIRS",
-    "DRIP","SCREEN","CUT","TAKE","STATIC","VOICEMAIL","JACKET","POSTER","BOARD","KEY","BOAT",
-    "BENCH","HALLWAY","STAIRWELL","RETURN","ORDER","RECEIPT","SIGNAL","WINDOW","MAP","FIELD"
+    "DRIP","SCREEN","CUT","TAKE","STATIC","VOICEMAIL","JACKET","POSTER","BOARD","KEY","BENCH",
+    "HALLWAY","STAIRWELL","RETURN","ORDER","RECEIPT","SIGNAL","WINDOW","MAP","FIELD"
   ];
-
   const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
 
   function makeBase(){
@@ -637,24 +677,22 @@
   function runtimeFor(genre){
     const short = /Experimental/.test(genre) ? chance(0.60) : false;
     const animated = /^Animated/.test(genre);
-
     if (short) return randInt(35, 60);
     if (animated) return randInt(78, 104);
     return randInt(84, 107);
   }
 
-  // Prevent repeats within a single click
   function generateBatch(n, eraBias, genreBias){
     const usedTitles = new Set();
-    const usedCombos = new Set(); // to reduce “same scene + same character + same problem” repeats
+    const usedCombos = new Set();
 
     let out = "Available Film Catalogue\n\n";
 
     for (let i = 0; i < n; i++){
       let tries = 0;
-      let title, entry;
+      let entry = "";
 
-      while (tries++ < 120){
+      while (tries++ < 140){
         const setting = pick(SETTINGS);
         const genre = pick(GENRES[genreBias] || GENRES.drama);
         const rating = /Experimental/.test(genre) ? pick(RATINGS_EXP) : pick(RATINGS);
@@ -662,9 +700,8 @@
         const runtime = runtimeFor(genre);
 
         const tail = chance(0.28) ? pick(TIME_TAILS) : pick(setting.tails);
-        title = buildTitle(makeBase(), tail);
+        const title = buildTitle(makeBase(), tail);
 
-        // Coherent synopsis structure: Setting -> Characters -> Problem -> Action -> End
         const chars = pick(CHARACTERS[setting.key]);
         const prob  = pick(PROBLEMS[setting.key]);
         const act   = pick(ACTIONS[setting.key]);
@@ -700,14 +737,33 @@ ${synopsis}
   // ===== UI wiring =====
   const $count = document.getElementById("count");
   const $era = document.getElementById("era");
-  const $genreBias = document.getElementById("genreBias");
   const $out = document.getElementById("out");
   const $note = document.getElementById("note");
 
+  let genreBias = "drama";
+
+  function setChip(active){
+    const ids = ["drama","mix","experimental"];
+    ids.forEach(id => {
+      const el = document.getElementById("chip-" + id);
+      el.setAttribute("aria-pressed", String(id === active));
+    });
+    genreBias = active;
+  }
+
+  function clickChip(id){ setChip(id); }
+
+  ["drama","mix","experimental"].forEach(id => {
+    const el = document.getElementById("chip-" + id);
+    el.addEventListener("click", () => clickChip(id));
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); clickChip(id); }
+    });
+  });
+
   document.getElementById("generate").addEventListener("click", () => {
     const n = Math.max(1, Math.min(10, parseInt($count.value || "5", 10)));
-    const text = generateBatch(n, $era.value, $genreBias.value);
-    $out.value = text;
+    $out.value = generateBatch(n, $era.value, genreBias);
     $note.textContent = "Generated.";
   });
 
@@ -723,7 +779,7 @@ ${synopsis}
     }
   });
 
-  // initial output so it never looks “dead”
+  // initial output so it never looks dead
   $out.value = generateBatch(5, "classic", "drama");
 })();
 </script>
