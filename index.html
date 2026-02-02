@@ -6,97 +6,85 @@
   <title>Yesterday’s Reels Licensing — Catalogue Generator</title>
   <style>
     :root { color-scheme: dark; }
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      margin: 0;
-      line-height: 1.4;
-      background: #111;
-      color: #eee;
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      margin:0; line-height:1.4;
+      background:#111; color:#eee;
     }
-    header {
-      padding: 24px 16px;
-      border-bottom: 1px solid #333;
-      background: #181818;
+    header{
+      padding:22px 16px;
+      border-bottom:1px solid #333;
+      background:#181818;
     }
-    main {
-      padding: 16px;
-      max-width: 980px;
-      margin: 0 auto;
+    main{ padding:16px; max-width:1100px; margin:0 auto; }
+    h1{ margin:0 0 8px 0; font-size:1.6rem; }
+    h2{ margin:0 0 10px 0; color:#fff; }
+    .sub{ margin:0; color:#bbb; max-width:110ch; }
+    .pill{
+      display:inline-block; padding:2px 8px;
+      border:1px solid #444; border-radius:999px;
+      font-size:.78rem; color:#aaa; background:#222;
+      margin-left:6px; vertical-align:middle;
     }
-    h1 { margin: 0 0 8px 0; font-size: 1.5rem; }
-    h2 { color: #fff; }
-    .sub {
-      margin: 0;
-      color: #bbb;
-      max-width: 95ch;
+    .about{
+      margin-top:12px; color:#cfcfcf; max-width:120ch;
+      font-size:.95rem;
     }
-    .panel {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1fr;
-      margin-top: 16px;
+    .about strong{ color:#fff; font-weight:650; }
+
+    .panel{ display:grid; gap:12px; grid-template-columns:1fr; margin-top:16px; }
+    @media (min-width: 920px){ .panel{ grid-template-columns:380px 1fr; } }
+
+    .card{
+      border:1px solid #333; border-radius:12px;
+      padding:14px; background:#1a1a1a;
+      box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset;
     }
-    @media (min-width: 860px) {
-      .panel { grid-template-columns: 340px 1fr; }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    label{ display:block; margin:0 0 6px 0; font-size:.9rem; color:#ccc; }
+    input, select, button{
+      font:inherit;
+      padding:10px;
+      border:1px solid #444;
+      border-radius:10px;
+      background:#222;
+      color:#eee;
+      width:100%;
+      box-sizing:border-box;
     }
-    .card {
-      border: 1px solid #333;
-      border-radius: 12px;
-      padding: 14px;
-      background: #1a1a1a;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
+    button{
+      cursor:pointer;
+      background:#eee; color:#111;
+      border:1px solid #eee;
+      width:auto; padding:10px 12px;
     }
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    button.secondary{
+      background:#222; color:#eee;
+      border:1px solid #444;
     }
-    label { font-size: 0.9rem; color: #ccc; }
-    input, select, button {
-      font: inherit;
-      padding: 10px;
-      border: 1px solid #444;
-      border-radius: 10px;
-      background: #222;
-      color: #eee;
+    button:disabled{ opacity:.6; cursor:not-allowed; }
+    .btns{ display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .fine{
+      color:#9aa0a6; font-size:.85rem;
+      margin-top:10px; line-height:1.35;
     }
-    button {
-      cursor: pointer;
-      background: #eee;
-      color: #111;
-      border: 1px solid #eee;
+    details{
+      margin-top:10px;
+      border:1px solid #333;
+      border-radius:10px;
+      padding:10px 12px;
+      background:#161616;
     }
-    button.secondary {
-      background: #222;
-      color: #eee;
-      border: 1px solid #444;
-    }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
-    .output {
-      white-space: pre-wrap;
+    summary{ cursor:pointer; color:#ddd; }
+    .output{
+      white-space:pre-wrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.95rem;
-      color: #ddd;
-    }
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border: 1px solid #444;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      color: #aaa;
-      background: #222;
-      margin-left: 6px;
-    }
-    .fine {
-      color: #9aa0a6;
-      font-size: 0.85rem;
-      margin-top: 8px;
-      line-height: 1.35;
+      font-size:.95rem;
+      color:#ddd;
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Yesterday’s Reels Licensing — Catalogue Generator</h1>
@@ -104,14 +92,23 @@
       Generates plausible “overlooked indie” catalogue entries with institutional sincerity and a suspicious abundance of quiet regret.
       <span class="pill">static</span>
       <span class="pill">no backend</span>
+      <span class="pill">DVD-era</span>
       <span class="pill">festival-adjacent</span>
     </p>
+
+    <div class="about">
+      <strong>Yesterday’s Reels</strong> is a boutique film licensing company that specializes in curating and distributing the best of overlooked cinema.
+      We believe that every film deserves an audience, regardless of budget, release history, or critical reception.<br><br>
+      We have the best collection of forgotten indie dramas, festival films that never received proper distribution, and exclusive DVD titles from the 90s and early 2000s.
+      We hold the exclusive public screening rights to over 100 titles, available for community events, festivals, private organizations, retro cinemas, or outdoor movie nights.<br><br>
+      Our catalogue is diverse, but we like to focus on character-driven stories, unique narratives, and films that prioritize emotional realism rather than over-the-top production.
+    </div>
   </header>
 
   <main>
     <div class="panel">
       <section class="card">
-        <h2 style="margin-top:0;">Generate</h2>
+        <h2>Generate</h2>
 
         <div class="row">
           <div>
@@ -144,26 +141,38 @@
           </div>
         </div>
 
-        <div class="btns" style="margin-top:12px;">
+        <div class="btns">
           <button id="btnGen">Generate</button>
           <button id="btnCopy" class="secondary" disabled>Copy</button>
-          <button id="btnClear" class="secondary">Clear</button>
+          <button id="btnClear" class="secondary">Clear output</button>
+          <button id="btnReset" class="secondary">Reset no-repeat memory</button>
         </div>
 
+        <details>
+          <summary>No repeats + coherence rules</summary>
+          <div class="fine">
+            Each film is generated with a strict structure: <b>Characters → Problem → Response → End</b>.
+            A single setting is chosen and used once (only as the opening line), so it doesn’t bleed into every section.
+            Repeats are blocked using a signature stored in your browser (localStorage). Seeded runs stay unique because the seed is salted per click.
+          </div>
+        </details>
+
         <div class="fine">
-          House style prioritizes character-driven stories and emotional realism. Festival mode increases experimental structure. Lighter mode biases toward community-friendly ratings.
+          Tip: If you see repeats, you’re either (1) using an extreme count repeatedly or (2) you hit the edge of the pool. Reset no-repeat memory to restart fresh.
         </div>
       </section>
 
       <section class="card">
-        <h2 style="margin-top:0;">Output</h2>
+        <h2>Output</h2>
         <div id="out" class="output">Click Generate.</div>
       </section>
     </div>
   </main>
 
 <script>
-/* ---------- RNG (seedable) ---------- */
+/* =========================
+   RNG (seedable)
+========================= */
 function hashStringToUint32(str) {
   let h = 2166136261 >>> 0;
   for (let i = 0; i < str.length; i++) {
@@ -186,82 +195,271 @@ function pick(arr, rng) { return arr[Math.floor(r(rng) * arr.length)]; }
 function chance(p, rng) { return r(rng) < p; }
 function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
-/* ---------- Company-style pools ---------- */
+/* =========================
+   No-repeat persistence
+========================= */
+const STORAGE_KEY = "yesterdays_reels_seen_v3";
+const CLICK_KEY   = "yesterdays_reels_clicks_v3";
 
-const CHARACTERS = [
-  { line: "Lonely waitress.", pronoun: "she" },
-  { line: "Drifter arrives.", pronoun: "he" },
-  { line: "Young woman moves in.", pronoun: "she" },
-  { line: "Divorced couple meet again.", pronoun: "they" },
-  { line: "Father and son on a long drive.", pronoun: "they" },
-  { line: "Two siblings spend the summer together.", pronoun: "they" },
-  { line: "Substitute teacher starts a new term.", pronoun: "he" },
-  { line: "Late-night radio host takes calls.", pronoun: "he" },
-  { line: "Strangers wait in the same room.", pronoun: "they" },
-  { line: "Used bookstore owner locks the door early.", pronoun: "they" },
-  { line: "Factory worker stays late.", pronoun: "they" }
-];
+function loadSeen() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? new Set(arr) : new Set();
+  } catch { return new Set(); }
+}
+function saveSeen(set) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(set))); } catch {}
+}
+function getClickCount() {
+  try {
+    const raw = localStorage.getItem(CLICK_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return Number.isFinite(n) ? n : 0;
+  } catch { return 0; }
+}
+function bumpClickCount() {
+  const n = getClickCount() + 1;
+  try { localStorage.setItem(CLICK_KEY, String(n)); } catch {}
+  return n;
+}
 
+let seen = loadSeen();
+
+/* =========================
+   Catalogue data
+========================= */
+
+/**
+ * Coherence model:
+ * - Pick ONE setting per film.
+ * - Setting is only stated once: opening line.
+ * - Characters/problems/responses/endings are setting-specific so you don’t get bus+bookstore mashups.
+ * - Synopsis structure is fixed: setting, characters, problem, response, ending.
+ */
 const SETTINGS = [
-  "Small town.",
-  "Apartment building.",
-  "Beach house.",
-  "Hospital night shift.",
-  "Airport after midnight.",
-  "Used bookstore on its last day.",
-  "Town library closing.",
-  "Bus route at night.",
-  "Factory break room.",
-  "Garage with one light bulb.",
-  "Park bench in late fall.",
-  "Diner after midnight."
+  {
+    tag: "diner",
+    settingLine: "Diner after midnight.",
+    characters: [
+      "Lonely waitress and a drifter with nowhere to sleep.",
+      "Two regulars who only speak when the place is empty.",
+      "A cook who watches the door like he’s waiting for someone."
+    ],
+    problems: [
+      "A conversation turns into a confession neither of them planned to make.",
+      "Someone asks a question that lands like an accusation.",
+      "They recognize each other, and neither admits it."
+    ],
+    responses: [
+      "They talk in circles until the truth slips out by accident.",
+      "They try to keep it casual, and fail.",
+      "They stop speaking and let the coffee go cold."
+    ],
+    endings: [
+      "They kiss. He leaves before morning.",
+      "They pay in silence and separate at the door.",
+      "The booths empty out. The neon keeps flickering."
+    ]
+  },
+  {
+    tag: "bus",
+    settingLine: "City bus route at night.",
+    characters: [
+      "Teen misses curfew and ends up riding the bus all night.",
+      "Two strangers sit across from each other and keep pretending not to listen.",
+      "A tired driver recognizes the passengers who have nowhere else to go."
+    ],
+    problems: [
+      "A missed stop turns into a long loop with no good way to get home.",
+      "Someone is carrying news they don’t want to deliver.",
+      "A familiar face shows up, and the night immediately feels wrong."
+    ],
+    responses: [
+      "They make small talk until it becomes too personal.",
+      "They avoid the obvious topic because it feels safer.",
+      "They keep riding because getting off would mean deciding."
+    ],
+    endings: [
+      "They step off at the last stop and don’t say goodbye.",
+      "Morning arrives and nothing feels solved.",
+      "The driver changes and everything feels different."
+    ]
+  },
+  {
+    tag: "bookstore",
+    settingLine: "Used bookstore closing.",
+    characters: [
+      "Owner and a customer who has been coming in for years.",
+      "Two ex-friends forced into the same aisle at the wrong time.",
+      "A teenager and an elderly clerk who refuses to sentimentalize it."
+    ],
+    problems: [
+      "The last day turns into an inventory of old disappointments.",
+      "A note falls out of a book and changes what they thought they knew.",
+      "Someone offers help, and it feels like pity."
+    ],
+    responses: [
+      "They argue quietly near the register and pretend it’s about money.",
+      "They box up the shelves like it’s a funeral ritual.",
+      "They keep talking because silence would be worse."
+    ],
+    endings: [
+      "The door locks for the last time.",
+      "They leave with nothing they meant to buy.",
+      "Someone stays behind after closing."
+    ]
+  },
+  {
+    tag: "apartment_outage",
+    settingLine: "Apartment building during a power outage.",
+    characters: [
+      "Strangers stuck on the same landing with nowhere to go.",
+      "A neighbour who overshares and another who refuses to participate.",
+      "Two people who have lived beside each other for years and never spoken."
+    ],
+    problems: [
+      "The dark makes everyone say what they normally edit out.",
+      "A noise in the hallway becomes a collective obsession.",
+      "Someone admits they’ve been afraid the whole time."
+    ],
+    responses: [
+      "They trade flashlights and pretend it’s generosity, not anxiety.",
+      "They tell stories to fill the dark and regret every detail.",
+      "They make a plan that won’t survive morning."
+    ],
+    endings: [
+      "The lights come back. Nobody feels better.",
+      "They go back inside and shut the door.",
+      "Someone leaves before it’s resolved."
+    ]
+  },
+  {
+    tag: "airport",
+    settingLine: "Airport after midnight.",
+    characters: [
+      "Business traveller who missed the last flight and a stranger who didn’t.",
+      "Two people waiting at the wrong gate for the same reason.",
+      "A couple quietly ending things beside a vending machine."
+    ],
+    problems: [
+      "A delay stretches long enough for real feelings to show up.",
+      "A phone call doesn’t come, and they stop pretending it will.",
+      "They realize they’re both running away—just in different directions."
+    ],
+    responses: [
+      "They talk all night like it counts as closure.",
+      "They keep checking the departures board like it’s advice.",
+      "They decide not to call anyone back."
+    ],
+    endings: [
+      "They part without exchanging names.",
+      "Nothing changes. They still feel different.",
+      "The lights stay too bright."
+    ]
+  },
+  {
+    tag: "hospital",
+    settingLine: "Hospital night shift.",
+    characters: [
+      "Two nurses and a doctor who never finishes a sentence.",
+      "A new hire trying to act like nothing affects them.",
+      "Coworkers flirting to distract themselves from the obvious."
+    ],
+    problems: [
+      "A patient takes a turn and nobody can admit they saw it coming.",
+      "A small mistake becomes a quiet emergency.",
+      "The shift stretches on and their patience runs out."
+    ],
+    responses: [
+      "They joke too loudly and then stop.",
+      "They wash their hands too long and call it professionalism.",
+      "They avoid eye contact and keep moving."
+    ],
+    endings: [
+      "Patient dies. Everyone feels guilty.",
+      "Morning arrives like an insult.",
+      "They clock out and don’t talk about it."
+    ]
+  },
+  {
+    tag: "roadtrip",
+    settingLine: "Long drive home.",
+    characters: [
+      "Father and son trapped in a car with twenty years of silence.",
+      "Two siblings driving back for a funeral they don’t want to attend.",
+      "A couple taking the long way because home feels worse."
+    ],
+    problems: [
+      "A fight at a gas station cracks open something old.",
+      "A song on the radio triggers a memory nobody asked for.",
+      "They realize they’ve been rewriting the past to survive it."
+    ],
+    responses: [
+      "They argue about a detail because the real issue is too big.",
+      "They drive in silence until it becomes unbearable.",
+      "They say the thing they avoided for years."
+    ],
+    endings: [
+      "Emotional breakthrough in the car. The road stays the same.",
+      "They keep driving anyway.",
+      "They get home and nothing is fixed."
+    ]
+  },
+  {
+    tag: "library",
+    settingLine: "Town library closing.",
+    characters: [
+      "Librarian and a regular who treats the building like a friend.",
+      "Staff organizing the final reading event while pretending it’s normal.",
+      "A teenager who only realizes what it meant on the last day."
+    ],
+    problems: [
+      "The goodbye event feels like a performance they didn’t rehearse.",
+      "A donor offers money too late and expects gratitude.",
+      "Someone returns an overdue book and asks for forgiveness."
+    ],
+    responses: [
+      "They read out loud and pretend it’s just tradition.",
+      "They argue politely and smile through it.",
+      "They pack the shelves like it’s an apology."
+    ],
+    endings: [
+      "The last book is checked out. The lights go off.",
+      "The room empties. The silence stays behind.",
+      "They lock the doors and don’t look back."
+    ]
+  },
+  {
+    tag: "festival_one_room",
+    settingLine: "One room. One camera.",
+    characters: [
+      "A man recreates moments from his life using different wigs and voices.",
+      "A woman documents herself until the documentation becomes the problem.",
+      "A former reporter interviewing people who don’t want to be a story."
+    ],
+    problems: [
+      "The recordings start contradicting each other in small ways.",
+      "Scenes repeat with changes nobody explains.",
+      "He can’t tell which version of himself is lying."
+    ],
+    responses: [
+      "He performs a memory again and again, trying to fix it.",
+      "She edits the footage until the truth disappears.",
+      "They argue with a recording like it can answer back."
+    ],
+    endings: [
+      "He deletes them.",
+      "The camera keeps rolling.",
+      "The lights go out."
+    ]
+  }
 ];
 
-const EMOTIONAL_REALISM = [
-  "They talk about what went wrong.",
-  "They avoid the obvious topic.",
-  "A long pause stretches too far.",
-  "Someone says the wrong thing and can’t take it back.",
-  "They keep speaking, but they don’t connect.",
-  "They pretend it’s fine because it’s easier.",
-  "Regret sits in the room like smoke."
-];
-
-const PLOT_LIGHT_BEATS = [
-  "An unexpected letter arrives.",
-  "A power outage forces people to talk.",
-  "A flight is missed.",
-  "A storm warning is ignored.",
-  "A locked basement door stays locked.",
-  "A lost object becomes a small obsession.",
-  "A routine changes and nobody knows how to react."
-];
-
-const OBJECTS = [
-  "Jacket found near the road.",
-  "Abandoned bicycle in a tree.",
-  "Broken kite string.",
-  "Old clock that keeps ticking.",
-  "Voice memo recorded too many times.",
-  "Bus ticket folded in a wallet.",
-  "Key that does not fit any lock.",
-  "Photo with someone cut out."
-];
-
-const ENDINGS = [
-  "They leave before morning.",
-  "Someone drives away crying.",
-  "Nothing is resolved.",
-  "They stop trying.",
-  "They smile anyway.",
-  "The lights go out.",
-  "They go back to work.",
-  "They say goodbye like it’s casual."
-];
-
-function weightedGenre(tone, rng) {
-  // Drama-forward, diverse, with festival weirdness when requested.
-  const house = [
+/* Genres: still drama-forward, but not locked to drama-only. */
+const GENRE_POOLS = {
+  house: [
     "Drama","Drama","Drama","Drama",
     "Drama / Romance",
     "Drama / Mystery",
@@ -269,10 +467,9 @@ function weightedGenre(tone, rng) {
     "Drama / Experimental",
     "Animated / Drama",
     "Drama / Comedy / Experimental",
-    "Action / Drama" // rare
-  ];
-
-  const festival = [
+    "Action / Drama" // rare, low-stakes
+  ],
+  festival: [
     "Drama","Drama",
     "Drama / Experimental","Drama / Experimental",
     "Drama / Comedy / Experimental",
@@ -281,18 +478,19 @@ function weightedGenre(tone, rng) {
     "Drama / Thriller",
     "Drama / Romance",
     "Action / Drama"
-  ];
-
-  const lighter = [
+  ],
+  lighter: [
     "Drama","Drama",
     "Drama / Romance",
     "Drama / Mystery",
     "Animated / Drama",
     "Drama / Comedy / Experimental",
     "Drama / Experimental"
-  ];
+  ]
+};
 
-  const pool = (tone === "festival") ? festival : (tone === "lighter") ? lighter : house;
+function weightedGenre(tone, rng) {
+  const pool = GENRE_POOLS[tone] || GENRE_POOLS.house;
   return pick(pool, rng);
 }
 
@@ -318,125 +516,132 @@ function ratingFor(genre, tone, rng) {
 function yearFromMode(mode, rng) {
   let lo = 1995, hi = 2012;
   if (mode === "nineties") { lo = 1995; hi = 1999; }
-  if (mode === "aughts") { lo = 2000; hi = 2009; }
-  if (mode === "tens") { lo = 2010; hi = 2012; }
+  if (mode === "aughts")   { lo = 2000; hi = 2009; }
+  if (mode === "tens")     { lo = 2010; hi = 2012; }
   return lo + Math.floor(r(rng) * (hi - lo + 1));
 }
 
 function runtimeFromGenre(genre, rng) {
   const isExperimental = genre.includes("Experimental");
-  const shortish = isExperimental && chance(0.4, rng);
+  const shortish = isExperimental && chance(0.45, rng);
   if (shortish) return 38 + Math.floor(r(rng) * 20); // 38–57
   return 86 + Math.floor(r(rng) * 19); // 86–104
 }
 
-/* Titles: simple, catalogue-like, DVD-era */
-const TITLE_A = ["MIDNIGHT","AUTUMN","WINTER","SUMMER","APRIL","LAST","SECOND","EMPTY","BROKEN","FADING","QUIET","BLUE"];
-const TITLE_B = ["BENCH","BUS","SIGNAL","FIELD","WEEKEND","LIBRARY DAY","WAITING ROOM","CLOCK SHOP","WINDOW SEAT","PINE ROAD","CARSON’S DINER","PAPER BOAT","GARAGE LIGHTS"];
+/* Title generator: larger combinatorics, classic catalogue vibe */
+const TITLE_ADJ = [
+  "MIDNIGHT","AUTUMN","WINTER","SUMMER","APRIL","LAST","SECOND","EMPTY","BROKEN","FADING",
+  "QUIET","BLUE","LOW","STATIC","SILENT","COLD","LONG","OLD","NEW","NIGHT"
+];
+const TITLE_NOUN = [
+  "BENCH","BUS","SIGNAL","FIELD","WEEKEND","WAITING ROOM","CLOCK SHOP","WINDOW SEAT",
+  "PINE ROAD","CARSON’S DINER","PAPER BOAT","GARAGE LIGHTS","BACK PORCH","LIBRARY DAY",
+  "KITE STRING","ECHO ROOM","ROOM FOR RENT","DUST ON THE SHELF","THE LONG DRIVE","THE BLUE BENCH"
+];
+const TITLE_PATTERNS = [
+  () => `THE ${pick(TITLE_ADJ, RNG)} ${pick(TITLE_NOUN, RNG)}`,
+  () => `${pick(TITLE_ADJ, RNG)} ${pick(TITLE_NOUN, RNG)}`,
+  () => `THE ${pick(TITLE_NOUN, RNG)}`,
+  () => `THE ${pick(TITLE_ADJ, RNG)} IN ${pick(["APRIL","WINTER","THE DARK","THE CITY","THE END"], RNG)}`
+];
+
+// We need RNG in title patterns. We'll set it per call.
+let RNG = null;
 
 function makeTitle(rng) {
-  const a = pick(TITLE_A, rng);
-  const b = pick(TITLE_B, rng);
-  const forms = [
-    `THE ${a} ${b}`,
-    `${a} ${b}`,
-    `THE ${b}`,
-    `LAST ${b}`
-  ];
-  return pick(forms, rng).replace(/\s+/g, " ").trim();
+  RNG = rng; // hacky but tiny: lets TITLE_PATTERNS use pick() cleanly
+  const t = pick(TITLE_PATTERNS, rng)();
+  return t.replace(/\s+/g, " ").trim().toUpperCase();
 }
 
-function makeSynopsis(genre, rng) {
-  // House voice: clipped, plausible, emotionally realistic. Every sentence capitalized.
-  const c = pick(CHARACTERS, rng);
-  const lines = [];
+/* =========================
+   Structured synopsis build
+========================= */
 
-  lines.push(pick(SETTINGS, rng));
-  lines.push(c.line);
-
-  if (chance(0.65, rng)) lines.push(pick(PLOT_LIGHT_BEATS, rng));
-  if (chance(0.60, rng)) lines.push(pick(OBJECTS, rng));
-
-  if (genre.includes("Mystery")) {
-    lines.push("Someone is missing.");
-    lines.push(pick(["People whisper.", "A brother searches.", "A rumor spreads.", "Nobody says it out loud."], rng));
-  } else if (genre.includes("Thriller")) {
-    lines.push("Noises at night.");
-    lines.push(pick(["The door stays closed.", "She doesn’t go downstairs.", "He watches the window.", "He calls the police."], rng));
-  } else if (genre.includes("Romance")) {
-    lines.push(pick(["Awkward dinner.", "They talk about mistakes.", "They sleep together. Regret.", "They almost kiss."], rng));
-  } else if (genre.includes("Comedy")) {
-    lines.push(pick(["Awkward dates.", "A joke doesn’t land.", "They laugh once, then stop.", "Someone overshares."], rng));
-  } else if (genre.includes("Experimental")) {
-    lines.push(pick(["Long silent shots.", "Monologues.", "Scenes repeat with small changes.", "One actor plays multiple roles."], rng));
-  } else if (genre.includes("Action")) {
-    lines.push(pick(["Wrong route.", "He thinks he is being followed.", "Several near encounters.", "No confrontation."], rng));
-  } else if (genre.includes("Animated")) {
-    lines.push(pick(["Gentle animation.", "Soft colours.", "Minimal dialogue.", "Simple drawings."], rng));
-  } else {
-    lines.push(pick(EMOTIONAL_REALISM, rng));
-  }
-
-  lines.push(pick(ENDINGS, rng));
-
-  // Keep tight like your catalogue blurbs.
-  const max = 6 + Math.floor(r(rng) * 2); // 6–7 fragments
-  return lines.slice(0, max).map(s => {
-    let t = String(s).trim();
-    if (!t) return t;
-    t = t[0].toUpperCase() + t.slice(1);
-    if (!/[.!?]$/.test(t)) t += ".";
-    return t;
-  }).join(" ");
+function tidySentence(s) {
+  let t = String(s).trim();
+  if (!t) return t;
+  t = t[0].toUpperCase() + t.slice(1);
+  if (!/[.!?]$/.test(t)) t += ".";
+  return t;
 }
 
-/* ---------- Uniqueness (no repeats) ---------- */
-const sessionSeen = new Set(); // persists across Generate clicks (until refresh)
+function buildStructuredSynopsis(setting, rng) {
+  // No overlap: each field has a distinct role.
+  const chars   = pick(setting.characters, rng);
+  const problem = pick(setting.problems, rng);
+  const resp    = pick(setting.responses, rng);
+  const end     = pick(setting.endings, rng);
 
+  return {
+    synopsis: [
+      tidySentence(setting.settingLine),
+      tidySentence(chars),
+      tidySentence(problem),
+      tidySentence(resp),
+      tidySentence(end)
+    ].join(" "),
+    parts: { setting: setting.settingLine, chars, problem, resp, end }
+  };
+}
+
+/* Strong signature: repeats become genuinely hard */
 function signatureForFilm(f) {
-  // Title + genre + opening chunk of synopsis catches near-duplicates.
-  return `${f.title}|${f.genre}|${f.synopsis.slice(0, 90)}`;
+  // This prevents “same structure, different title” and vice versa.
+  return [
+    f.title, f.year, f.genre, f.rating, f.runtime,
+    f.settingTag,
+    f._parts.chars,
+    f._parts.problem,
+    f._parts.resp,
+    f._parts.end
+  ].join("|");
 }
 
 function generateUniqueFilm(tone, yearMode, rng, localSeen) {
-  // Try hard to avoid repeats. If pools are too small and count is huge, it will degrade gracefully.
-  for (let tries = 0; tries < 250; tries++) {
-    const title = makeTitle(rng);
-    const year = yearFromMode(yearMode, rng);
+  for (let tries = 0; tries < 1400; tries++) {
     const genre = weightedGenre(tone, rng);
+
+    // Slightly bias experimental genres toward the one-room festival setting.
+    let settingPool = SETTINGS.slice();
+    if (tone !== "festival") {
+      // Keep the experimental one-room setting rarer in house/lighter.
+      settingPool = SETTINGS.filter(s => s.tag !== "festival_one_room");
+      if (genre.includes("Experimental") && chance(0.30, rng)) {
+        settingPool = SETTINGS.slice(); // allow it sometimes
+      }
+    } else {
+      if (genre.includes("Experimental") && chance(0.45, rng)) {
+        // nudge toward festival_one_room
+        const oneRoom = SETTINGS.find(s => s.tag === "festival_one_room");
+        if (oneRoom) settingPool = [oneRoom].concat(SETTINGS.filter(s => s.tag !== "festival_one_room"));
+      }
+    }
+
+    const setting = pick(settingPool, rng);
+
+    const title   = makeTitle(rng);
+    const year    = yearFromMode(yearMode, rng);
     const runtime = runtimeFromGenre(genre, rng);
-    const rating = ratingFor(genre, tone, rng);
-    const synopsis = makeSynopsis(genre, rng);
+    const rating  = ratingFor(genre, tone, rng);
 
-    const f = { title, year, runtime, genre, rating, synopsis };
-    const sig = signatureForFilm(f);
+    const built = buildStructuredSynopsis(setting, rng);
 
-    if (localSeen.has(sig)) continue;
-    if (sessionSeen.has(sig)) continue;
-
-    localSeen.add(sig);
-    sessionSeen.add(sig);
-    return f;
-  }
-
-  // fallback: still keep local uniqueness (within this output) even if session pool is exhausted
-  for (let tries = 0; tries < 250; tries++) {
-    const f = {
-      title: makeTitle(rng),
-      year: yearFromMode(yearMode, rng),
-      genre: weightedGenre(tone, rng),
+    const film = {
+      title, year, runtime, genre, rating,
+      synopsis: built.synopsis,
+      settingTag: setting.tag,
+      _parts: built.parts
     };
-    f.runtime = runtimeFromGenre(f.genre, rng);
-    f.rating = ratingFor(f.genre, tone, rng);
-    f.synopsis = makeSynopsis(f.genre, rng);
 
-    const sig = signatureForFilm(f);
+    const sig = signatureForFilm(film);
     if (localSeen.has(sig)) continue;
+    if (seen.has(sig)) continue;
 
     localSeen.add(sig);
-    return f;
+    seen.add(sig);
+    return film;
   }
-
   return null;
 }
 
@@ -448,13 +653,22 @@ Rating: ${f.rating}
 “${f.synopsis}”`;
 }
 
-/* ---------- UI wiring ---------- */
+/* =========================
+   UI wiring
+========================= */
+const out = document.getElementById("out");
+const btnCopy = document.getElementById("btnCopy");
+
 document.getElementById("btnGen").onclick = () => {
   const n = clamp(parseInt(document.getElementById("count").value || "5", 10), 1, 50);
   const tone = document.getElementById("tone").value;
   const yearMode = document.getElementById("yearMode").value;
+
+  // Salted seed per click => seeded runs won't repeat on each click.
   const seedStr = document.getElementById("seed").value.trim();
-  const rng = seedStr ? mulberry32(hashStringToUint32(seedStr)) : null;
+  const clickIndex = bumpClickCount();
+  const salted = seedStr ? `${seedStr}#${clickIndex}` : "";
+  const rng = salted ? mulberry32(hashStringToUint32(salted)) : null;
 
   const localSeen = new Set();
   const films = [];
@@ -465,19 +679,28 @@ document.getElementById("btnGen").onclick = () => {
     films.push(f);
   }
 
+  saveSeen(seen);
+
   const header = `Available Film Catalogue\n\n`;
-  document.getElementById("out").textContent = header + films.map(formatFilm).join("\n\n");
-  document.getElementById("btnCopy").disabled = false;
+  out.textContent = header + (films.length ? films.map(formatFilm).join("\n\n") : "No unique entries left in the current pool. Reset no-repeat memory.");
+  btnCopy.disabled = films.length === 0;
 };
 
 document.getElementById("btnClear").onclick = () => {
-  document.getElementById("out").textContent = "Click Generate.";
-  document.getElementById("btnCopy").disabled = true;
+  out.textContent = "Click Generate.";
+  btnCopy.disabled = true;
 };
 
-document.getElementById("btnCopy").onclick = async () => {
-  try { await navigator.clipboard.writeText(document.getElementById("out").textContent); }
-  catch { /* ignore */ }
+document.getElementById("btnReset").onclick = () => {
+  seen = new Set();
+  saveSeen(seen);
+  try { localStorage.setItem(CLICK_KEY, "0"); } catch {}
+  out.textContent = "No-repeat memory reset. Click Generate.";
+  btnCopy.disabled = true;
+};
+
+btnCopy.onclick = async () => {
+  try { await navigator.clipboard.writeText(out.textContent); } catch {}
 };
 </script>
 </body>
