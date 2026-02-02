@@ -208,10 +208,18 @@ function shuffle(arr, rng) {
 }
 
 /* =========================
+   Title normalization helpers
+   (FIXES "THE THE ..." bugs)
+========================= */
+function stripLeadingThe(s) {
+  return String(s).replace(/^THE\s+/i, "").trim();
+}
+
+/* =========================
    No-repeat persistence
 ========================= */
-const STORAGE_KEY = "yesterdays_reels_seen_v5";
-const CLICK_KEY   = "yesterdays_reels_clicks_v5";
+const STORAGE_KEY = "yesterdays_reels_seen_v6";
+const CLICK_KEY   = "yesterdays_reels_clicks_v6";
 
 function loadSeen() {
   try {
@@ -277,12 +285,6 @@ const SOFT_ACTIONS = [
 /* =========================
    Settings (expanded heavily)
 ========================= */
-/**
- * Each setting includes:
- * - settingLine (used once)
- * - titleNouns/titleAdjs (setting-aware titles)
- * - characters/problems/responses/endings (bigger pools reduce repeats)
- */
 const SETTINGS = [
   /* ---- DINER ---- */
   {
@@ -812,7 +814,7 @@ const SETTINGS = [
     ]
   },
 
-  /* ---- OUTDOOR MOVIE NIGHT (for irony) ---- */
+  /* ---- OUTDOOR MOVIE NIGHT ---- */
   {
     tag: "outdoor_movie",
     settingLine: "Outdoor movie night behind a community centre.",
@@ -943,6 +945,7 @@ function runtimeFromGenre(genre, rng) {
 
 /* =========================
    Title generator (setting-aware)
+   FIX: prevents "THE THE ..." via stripLeadingThe()
 ========================= */
 const FALLBACK_ADJS = [
   "MIDNIGHT","AUTUMN","WINTER","SUMMER","APRIL","LAST","SECOND","EMPTY","BROKEN","FADING",
@@ -952,9 +955,12 @@ const PLACE_BITS = ["APRIL","WINTER","THE DARK","THE CITY","THE END","SUNDAY","M
 
 function makeTitleForSetting(setting, rng) {
   const adjs = (setting.titleAdjs && setting.titleAdjs.length) ? setting.titleAdjs : FALLBACK_ADJS;
-  const nouns = (setting.titleNouns && setting.titleNouns.length)
+  const nounsRaw = (setting.titleNouns && setting.titleNouns.length)
     ? setting.titleNouns
     : ["THE LAST STOP","THE BLUE BENCH","WINDOW SEAT","BACK PORCH"];
+
+  // Normalize nouns so templates can safely add "THE"
+  const nouns = nounsRaw.map(stripLeadingThe);
 
   const patterns = [
     () => `THE ${pick(adjs, rng)} ${pick(nouns, rng)}`,
