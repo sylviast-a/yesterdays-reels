@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-CA">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Yesterday's Reels — Catalogue Generator</title>
   <style>
     :root{
@@ -20,148 +20,87 @@
     body{
       margin:0;
       font-family:var(--sans);
-      background:
-        radial-gradient(1200px 600px at 25% -10%, rgba(200,168,255,.14), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(153,255,233,.08), transparent 55%),
-        var(--bg);
+      background: var(--bg);
       color:var(--text);
     }
     .wrap{
       max-width:1100px;
       margin:0 auto;
-      padding:24px 18px 26px;
+      padding:22px 16px 28px;
       display:grid;
       grid-template-columns:1fr;
-      gap:14px;
+      gap:12px;
     }
     @media (min-width: 980px){
       .wrap{grid-template-columns: 420px 1fr;}
     }
-    header{
-      grid-column:1 / -1;
-      padding:0 2px;
-    }
-    h1{
-      margin:0 0 6px;
-      font-size:20px;
-      letter-spacing:.2px;
-    }
+    header{grid-column:1 / -1;}
+    h1{margin:0 0 6px; font-size:20px; letter-spacing:.2px;}
     .tagline{
       margin:0;
       color:var(--muted);
-      line-height:1.35;
-      max-width:85ch;
       font-size:13px;
+      line-height:1.35;
+      max-width:92ch;
     }
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), transparent 28%), var(--panel);
+      background: var(--panel);
       border:1px solid var(--line);
       border-radius:14px;
       padding:14px;
       box-shadow: 0 12px 30px rgba(0,0,0,.30);
     }
-    .card h2{
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.2px;
-    }
-    label{
-      font-size:12px;
-      color:var(--muted);
-      display:block;
-      margin:10px 0 6px;
-    }
+    .card h2{margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
+    label{font-size:12px; color:var(--muted); display:block; margin:10px 0 6px;}
     input, select, button, textarea{font:inherit}
-    input[type="number"], input[type="text"], select{
+    input[type="number"], select{
       width:100%;
-      background:var(--panel2);
-      color:var(--text);
+      background: var(--panel2);
+      color: var(--text);
       border:1px solid var(--line);
       border-radius:10px;
-      padding:10px 10px;
+      padding:10px;
       outline:none;
     }
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:flex-end;
-      flex-wrap:wrap;
-    }
+    .row{display:flex; gap:10px; flex-wrap:wrap;}
     .row > div{flex:1; min-width:140px;}
-    .btnrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
     button{
       cursor:pointer;
       border-radius:10px;
       padding:10px 12px;
       border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      color:var(--text);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
       font-weight:600;
       letter-spacing:.2px;
     }
     button.primary{
       border-color: rgba(200,168,255,.55);
-      background:linear-gradient(180deg, rgba(200,168,255,.22), rgba(200,168,255,.05));
-    }
-    button.danger{
-      border-color: rgba(255,138,138,.40);
-      background:linear-gradient(180deg, rgba(255,138,138,.18), rgba(255,138,138,.04));
+      background: rgba(200,168,255,.18);
     }
     button:active{transform: translateY(1px)}
-    .hint{
-      margin:8px 0 0;
-      font-size:12px;
-      color:var(--muted);
-      line-height:1.35;
-    }
-    .pillbar{
-      margin-top:10px;
-      padding-top:10px;
-      border-top:1px dashed rgba(255,255,255,.12);
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      font-family:var(--mono);
-      font-size:12px;
-      color:#cdd3ea;
-    }
-    .pill{
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.04);
-    }
     textarea{
       width:100%;
-      min-height:520px;
+      min-height:560px;
       resize:vertical;
-      background:var(--panel2);
+      background: var(--panel2);
       border:1px solid var(--line);
       border-radius:12px;
-      color:var(--text);
+      color: var(--text);
       padding:12px;
-      font-family:var(--mono);
+      font-family: var(--mono);
       font-size:12.5px;
       line-height:1.45;
       outline:none;
       white-space:pre;
     }
-    .topnote{
+    .note{
       margin-top:8px;
       color:var(--muted);
       font-size:12px;
       line-height:1.35;
-    }
-    .ok{
-      color: #bfffe0;
-    }
-    .warn{
-      color: #ffd38a;
+      min-height: 1.2em;
     }
   </style>
 </head>
@@ -171,7 +110,7 @@
     <header>
       <h1>Yesterday's Reels — Catalogue Generator</h1>
       <p class="tagline">
-        Generates plausible "overlooked indie" catalogue entries with institutional sincerity and a suspicious abundance of quiet regret.
+        Generates plausible catalogue entries for a boutique film licensing collection: overlooked indie dramas, festival films that never received proper distribution, and oddball DVD-era titles—character-driven, emotionally realistic, and quietly doomed.
       </p>
     </header>
 
@@ -183,7 +122,7 @@
 
       <div class="row">
         <div>
-          <label for="era">Era bias</label>
+          <label for="era">Year range bias</label>
           <select id="era">
             <option value="classic">Mostly 1995–2005</option>
             <option value="mixed">Mixed</option>
@@ -191,663 +130,602 @@
           </select>
         </div>
         <div>
-          <label for="tone">Tone bias</label>
-          <select id="tone">
-            <option value="reels">Institutional regret (default)</option>
-            <option value="softer">Softer</option>
-            <option value="bleaker">Bleaker</option>
-            <option value="odd">More experimental</option>
+          <label for="genreBias">Genre bias</label>
+          <select id="genreBias">
+            <option value="drama">Drama-heavy (on brand)</option>
+            <option value="mix">More variety</option>
+            <option value="experimental">More experimental</option>
           </select>
         </div>
       </div>
 
-      <label for="seed">Optional seed (blank = chaos)</label>
-      <input id="seed" type="text" placeholder="e.g., gilmore-binder" />
-
       <div class="btnrow">
         <button class="primary" id="generate" type="button">Generate</button>
         <button id="copy" type="button">Copy output</button>
-        <button class="danger" id="reset" type="button">Reset anti-repeat memory</button>
       </div>
 
-      <p class="hint">
-        Titles avoid "ON MIDNIGHT / IN MIDNIGHT / ON APRIL" via simple grammar rules (time vs place).
-        Repeats are reduced across generations using localStorage.
-      </p>
-
-      <div class="pillbar">
-        <span class="pill" id="pillTitles">Seen titles: 0</span>
-        <span class="pill" id="pillEntries">Seen entries: 0</span>
-        <span class="pill" id="pillStatus">Status: <span class="warn">idle</span></span>
-      </div>
+      <div class="note" id="note"></div>
     </section>
 
     <section class="card">
       <h2>Output</h2>
       <textarea id="out" spellcheck="false"></textarea>
-      <div class="topnote" id="note"></div>
     </section>
   </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+(() => {
   "use strict";
 
-  /* ============
-     RNG
-     ============ */
-  function xmur3(str) {
-    let h = 1779033703 ^ str.length;
-    for (let i = 0; i < str.length; i++) {
-      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-      h = (h << 13) | (h >>> 19);
-    }
-    return function() {
-      h = Math.imul(h ^ (h >>> 16), 2246822507);
-      h = Math.imul(h ^ (h >>> 13), 3266489909);
-      h ^= h >>> 16;
-      return h >>> 0;
-    };
+  // ===== Helpers =====
+  function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
+  function chance(p){ return Math.random() < p; }
+  function capSentence(s){
+    // Capitalize first letter after quotes or start; keep the rest as-is.
+    return s.replace(/(^|[“"]\s*)([a-z])/g, (m, a, b) => a + b.toUpperCase());
   }
-  function mulberry32(a) {
-    return function() {
-      let t = a += 0x6D2B79F5;
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
+  function dedupeWordRuns(s){
+    return s.replace(/\b(\w+)(\s+\1\b)+/gi, "$1");
   }
-  function makeRng(seedStr) {
-    const seedFn = xmur3(seedStr);
-    return mulberry32(seedFn());
+  function stripLeadingArticle(s){
+    return String(s).trim().replace(/^(THE|A|AN)\s+/i, "").trim();
   }
-  function pick(rng, arr) {
-    return arr[Math.floor(rng() * arr.length)];
-  }
-  function pickWeighted(rng, items) {
-    const total = items.reduce((s, x) => s + x.w, 0);
-    let roll = rng() * total;
-    for (const it of items) {
-      roll -= it.w;
-      if (roll <= 0) return it.v;
-    }
-    return items[items.length - 1].v;
-  }
-  function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
-
-  /* ============
-     localStorage anti-repeat
-     ============ */
-  const LS_TITLES = "yr_seen_titles_v3";
-  const LS_SIGS   = "yr_seen_sigs_v3";
-  const LS_CLICK  = "yr_click_idx_v3";
-
-  function loadSet(key) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) return new Set();
-      const arr = JSON.parse(raw);
-      return new Set(Array.isArray(arr) ? arr : []);
-    } catch {
-      return new Set();
-    }
-  }
-  function saveSet(key, set) {
-    localStorage.setItem(key, JSON.stringify(Array.from(set)));
-  }
-  function bumpClickIndex() {
-    const raw = localStorage.getItem(LS_CLICK);
-    const n = raw ? parseInt(raw, 10) : 0;
-    const next = (Number.isFinite(n) ? n : 0) + 1;
-    localStorage.setItem(LS_CLICK, String(next));
-    return next;
+  function upperTitleCase(s){
+    // Force titles to all caps like your list, but with sane whitespace.
+    return String(s).replace(/\s+/g," ").trim().toUpperCase();
   }
 
-  /* ============
-     Title grammar (fixes ON MIDNIGHT etc.)
-     ============ */
+  // ===== Title grammar rules =====
   const TIME_AT = new Set(["MIDNIGHT","DAWN","DUSK","SUNRISE","SUNSET","NIGHT"]);
   const TIME_IN = new Set(["APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER","WINTER","SPRING","SUMMER","AUTUMN"]);
   const TIME_ON = new Set(["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]);
 
-  function stripLeadingArticle(s){
-    return String(s).trim().replace(/^(THE|A|AN)\s+/i, "").trim();
+  function isTimeToken(t){
+    const x = String(t).toUpperCase();
+    return TIME_AT.has(x) || TIME_IN.has(x) || TIME_ON.has(x);
   }
-  function dedupeNeighborWords(s){
-    return s.replace(/\b(\w+)\s+\1\b/gi, "$1");
-  }
-  function fixBadTimeEndings(title){
-    return title
-      .replace(/\bON\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
-      .replace(/\bIN\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
-      .replace(/\bON\s+APRIL\b/gi, "IN APRIL")
-      .replace(/\bIN\s+SUNDAY\b/gi, "ON SUNDAY")
-      .replace(/\bTHE\s+THE\b/gi, "THE")
-      .trim();
-  }
-  function isTimeToken(token){
-    const t = token.toUpperCase();
-    return TIME_AT.has(t) || TIME_IN.has(t) || TIME_ON.has(t);
-  }
-  function chooseTimePrep(token){
-    const t = token.toUpperCase();
-    if (TIME_AT.has(t)) return "AT";
-    if (TIME_ON.has(t)) return "ON";
+  function timePrep(t){
+    const x = String(t).toUpperCase();
+    if (TIME_AT.has(x)) return "AT";
+    if (TIME_ON.has(x)) return "ON";
     return "IN";
   }
-  function cleanToken(s){
-    return stripLeadingArticle(s).replace(/\s+/g, " ").trim();
-  }
+  function buildTitle(base, tail){
+    const b = stripLeadingArticle(base);
+    const t = stripLeadingArticle(tail);
+    let title;
 
-  function buildTitle(rng, base, tail){
-    const cleanBase = cleanToken(base).toUpperCase();
-    const cleanTail = cleanToken(tail).toUpperCase();
-
-    if (isTimeToken(cleanTail)) {
-      const prep = chooseTimePrep(cleanTail);
-      return fixBadTimeEndings(dedupeNeighborWords(`THE ${cleanBase} ${prep} ${cleanTail}`));
+    if (isTimeToken(t)) {
+      title = `THE ${b} ${timePrep(t)} ${t}`;
+    } else {
+      const preps = ["IN","AT","UNDER","BEHIND","NEAR","OUTSIDE"];
+      const prep = pick(preps);
+      title = `THE ${b} ${prep} THE ${t}`;
     }
 
-    const placePreps = ["IN","AT","ON","UNDER","BEHIND"];
-    const prep = pick(rng, placePreps);
-    return fixBadTimeEndings(dedupeNeighborWords(`THE ${cleanBase} ${prep} THE ${cleanTail}`));
+    title = dedupeWordRuns(title)
+      .replace(/\bTHE\s+THE\b/gi, "THE")
+      .replace(/\bIN\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
+      .replace(/\bON\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
+      .replace(/\bON\s+APRIL\b/gi, "IN APRIL");
+
+    return upperTitleCase(title);
   }
 
-  /* ============
-     Data (expanded)
-     ============ */
-  const RATINGS = [
-    {v:"G", w:14},{v:"PG", w:22},{v:"PG-13", w:28},{v:"R", w:26},{v:"NR", w:10}
-  ];
-  const GENRES = [
-    {v:"Drama", w:46},
-    {v:"Drama / Romance", w:16},
-    {v:"Drama / Mystery", w:10},
-    {v:"Drama / Thriller", w:10},
-    {v:"Drama / Comedy / Experimental", w:6},
-    {v:"Drama / Experimental", w:7},
-    {v:"Animated / Drama", w:4},
-    {v:"Animated / Drama / Experimental", w:1}
-  ];
-
-  const BASE_ADJ = [
-    "QUIET","LAST","EMPTY","FADING","BROKEN","BLUE","LOW","SOFT","SECOND","RETURN","STATIC",
-    "FLUORESCENT","UNPUBLISHED","HALF-LIT","DUSTY","MISSING","BACK","THIN","COLD","WIDE",
-    "SMALL","FALSE","GENTLE","SILENT","OPEN","CLOSED","SUNDAY","APRIL","WINTER"
-  ];
-
-  const BASE_NOUN = [
-    "PORCH LIGHT","PROJECTOR HUM","RETURN DATE","VENDING MACHINE","LIBRARY CARD","BENCH",
-    "GATE 12","EMPTY AISLE","WINDOW SEAT","PAPER BOAT","BROKEN RECEIPT","OLD LETTER",
-    "HALLWAY","BLUE BENCH","LAST ORDER","FINAL READING","CLOCK SHOP","SECOND KEY",
-    "BUS TICKET","DARK SCREEN","WAITING ROOM","MOTEL ICE","LAUNDROMAT LIGHTS","FERRY HORN",
-    "MISSING POSTER","JACKET","KITE STRING","GARAGE LIGHTS","QUIET CUT","DEPARTURE BOARD",
-    "BACK PORCH","DINER COFFEE","IV DRIP","MAP","SCREEN","SIGNAL","STATIC LINE","TAKE",
-    "LONG DRIVE","STAIRWELL","SHELF","CITY LIGHTS","PARK CLOCK","FIELD","PINE ROAD"
-  ];
-
-  const PLACE_TAIL = [
-    "CITY","PINE ROAD","CARSONS DINER","THE END","AIRPORT","TERMINAL","HALLWAY","LIBRARY",
-    "BOOKSTORE","PARK","BUS","LAST STOP","MOTEL","LAUNDROMAT","FERRY","GARAGE","WAITING ROOM",
-    "BACK PORCH","STAIRWELL","SCREEN","TURNAROUND","CLOCK SHOP","FIELD","GAS STATION",
-    "COMMUNITY CENTRE","EMPTY LOT","RIVER","BRIDGE","PLATFORM","EXIT","NIGHT SHIFT"
-  ].map(stripLeadingArticle);
-
-  const TIME_TAIL = ["MIDNIGHT","APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","DAWN","DUSK","NIGHT"];
-
-  const TONE_ADD = {
-    reels: ["", "", "", " Nobody feels redeemed.", " The kindness lands wrong.", " They call it professionalism and it doesn't help."],
-    softer:["", "", "", " Someone almost apologises.", " It doesn't fix anything, but it matters.", " They try to be gentle about it."],
-    bleaker:["", "", "", " The air feels like evidence.", " The ending arrives early.", " They say the polite thing and hate it."],
-    odd:   ["", "", "", " The scene repeats with one detail missing.", " The sound drifts out of sync.", " They narrate it as if that makes it real."]
+  // ===== Data (bigger to reduce repeats) =====
+  const GENRES = {
+    drama: [
+      "Drama","Drama","Drama","Drama",
+      "Drama / Romance","Drama / Mystery","Drama / Thriller",
+      "Drama","Drama","Drama / Mystery","Drama / Romance"
+    ],
+    mix: [
+      "Drama","Drama / Romance","Drama / Mystery","Drama / Thriller",
+      "Drama / Comedy / Experimental","Drama / Experimental",
+      "Animated / Drama","Animated / Drama",
+      "Action / Drama","Drama"
+    ],
+    experimental: [
+      "Drama / Experimental","Drama / Comedy / Experimental",
+      "Animated / Drama / Experimental","Drama / Experimental",
+      "Drama / Comedy / Experimental","Drama / Experimental",
+      "Drama","Animated / Drama"
+    ]
   };
 
-  const SCENES = [
-    {
-      setting:"Airport after midnight.",
-      tails:["AIRPORT","TERMINAL","GATE 12","DEPARTURE BOARD","EXIT"],
-      chars:[
-        "A parent travelling alone and a seatmate who asks too many questions",
-        "Two people waiting at the wrong gate for the same reason",
-        "A musician with a broken case and a stranger offering unsolicited advice",
-        "An airport cleaner and a traveller who won't sit down",
-        "A couple pretending they're just colleagues"
-      ],
-      probs:[
-        "A cancelled flight becomes a referendum on their life choices",
-        "They hear their name over the intercom and it isn't good news",
-        "A delay stretches long enough for real feelings to show up",
-        "A voicemail arrives that changes the destination",
-        "Someone else recognises them first"
-      ],
-      resp:[
-        "They keep checking the departures board like it's advice",
-        "They decide not to call anyone back",
-        "They walk the terminal in slow circles like it's exercise",
-        "They make small talk until it becomes too personal",
-        "They trade practical help because feelings are harder"
-      ],
-      end:[
-        "They leave the airport and don't feel relieved",
-        "Someone leaves early",
-        "They sit quietly until the announcement stops mattering",
-        "They step outside and realise they forgot what they wanted",
-        "They go back through security even though they don't need to"
-      ]
-    },
-    {
-      setting:"Outdoor movie night behind a community centre.",
-      tails:["COMMUNITY CENTRE","SCREEN","PROJECTOR","BACK PORCH","PARK"],
-      chars:[
-        "A couple in charge of sound who keep arguing in whispers",
-        "Volunteers setting up a screen while pretending they're not angry",
-        "A host making announcements nobody listens to",
-        "A teenager embarrassed to be there and secretly moved by it",
-        "A parent trying to keep kids quiet and failing politely"
-      ],
-      probs:[
-        "The projector keeps cutting out at the worst moments",
-        "The film choice becomes an accusation no one says out loud",
-        "A rumour spreads about why the film was chosen",
-        "Someone recognises themselves in the film and doesn't laugh",
-        "The audience becomes a jury without meaning to"
-      ],
-      resp:[
-        "They pretend it's fine and keep adjusting the settings",
-        "They drift into side conversations that turn personal",
-        "They argue about logistics because the real topic is forbidden",
-        "They clap too hard to prove they're supportive",
-        "They keep checking the clock and pretending that's normal"
-      ],
-      end:[
-        "A kid falls asleep and that becomes the kindest ending",
-        "The room empties. The feeling stays",
-        "Nobody feels redeemed",
-        "They drive home without turning the radio on",
-        "They pack up the chairs like they're hiding evidence"
-      ]
-    },
-    {
-      setting:"Used bookstore closing.",
-      tails:["BOOKSTORE","EMPTY AISLE","SHELF","RECEIPT","LETTER"],
-      chars:[
-        "A buyer with a clipboard and a seller with too many memories",
-        "Two ex-friends forced into the same aisle at the wrong time",
-        "A parent and child arguing quietly over what to keep",
-        "A staff member who cannot stop straightening the same display",
-        "A regular customer who knows the owner's story too well"
-      ],
-      probs:[
-        "An old receipt proves somebody lied about when they left town",
-        "They realise they've been returning to the same shelf for years",
-        "A donation plate appears and nobody acknowledges it",
-        "A book goes missing and everyone pretends it's fine",
-        "A letter falls out of a hardback and changes the tone of the room"
-      ],
-      resp:[
-        "They read random passages out loud like it's a last rite",
-        "They bargain as if bargaining changes the ending",
-        "They make a list of what mattered and hate the list",
-        "They tidy the shelves because it's the only acceptable emotion",
-        "They keep talking about the weather until someone stops playing along"
-      ],
-      end:[
-        "Nothing changes. Something does",
-        "They lock the door without ceremony",
-        "They leave with nothing they meant to buy",
-        "The last light gets switched off and nobody says anything",
-        "They take one book each and agree not to mention it"
-      ]
-    },
-    {
-      setting:"Town library closing.",
-      tails:["LIBRARY","FINAL READING","LIBRARY CARD","LAST DAY","STAIRWELL"],
-      chars:[
-        "A donor expecting gratitude and a librarian refusing to perform it",
-        "Two volunteers arguing over what deserves to be saved",
-        "A book club that can't agree on what the closure means",
-        "A child asking where the books go and nobody answering correctly",
-        "A staff member who has memorised everyone's routine"
-      ],
-      probs:[
-        "Someone returns an overdue book and asks for forgiveness",
-        "A rumour spreads that the building will be demolished",
-        "A sign goes up and nobody reads it",
-        "A final event is scheduled and everyone acts like it's optional",
-        "A single missing book becomes the day's entire personality"
-      ],
-      resp:[
-        "They take photos like proof they were here",
-        "They argue politely and smile through it",
-        "They keep checking the clock and pretend it's about time management",
-        "They sort donations with the focus of people avoiding grief",
-        "They tell themselves it's only a building and don't believe it"
-      ],
-      end:[
-        "The last book is checked out. The lights go off",
-        "They leave their cards on the counter like offerings",
-        "Someone says 'see you next week' out of habit and no one corrects them",
-        "They stand in the doorway too long and call it closure",
-        "The door locks with a sound that feels personal"
-      ]
-    },
-    {
-      setting:"Hospital night shift.",
-      tails:["NIGHT SHIFT","WAITING ROOM","HALLWAY","IV DRIP","STATIC LINE"],
-      chars:[
-        "A new hire trying to act like nothing affects them",
-        "A paramedic dropping off a patient they can't forget",
-        "Coworkers flirting to distract themselves from the obvious",
-        "A nurse and a doctor who never finishes a sentence",
-        "A family asking for reassurance nobody can give"
-      ],
-      probs:[
-        "A small mistake becomes a quiet emergency",
-        "An empty bed becomes a question nobody answers",
-        "They realise they've been working around a lie",
-        "A chart goes missing and the room becomes suspicious",
-        "A patient says something kind and everyone panics a little"
-      ],
-      resp:[
-        "They cling to procedure like it's morality",
-        "They wash their hands too long and call it professionalism",
-        "They joke too loudly and then stop",
-        "They volunteer for extra tasks and resent themselves for it",
-        "They speak in euphemisms until someone can't anymore"
-      ],
-      end:[
-        "Patient dies. Everyone feels guilty",
-        "Morning arrives like an insult",
-        "They clock out and still feel on shift",
-        "They apologise to the wrong person and it's worse",
-        "They do everything correctly and still feel guilty"
-      ]
-    },
-    {
-      setting:"City bus route at night.",
-      tails:["LAST STOP","BUS TICKET","TURNAROUND","PLATFORM","EXIT"],
-      chars:[
-        "A person with a suitcase and a person with nothing at all",
-        "A teen who misses curfew and ends up riding the bus all night",
-        "A driver who knows everyone's story and pretends not to",
-        "Two strangers who sit too close because the bus is empty",
-        "A regular rider who notices a new face and regrets it"
-      ],
-      probs:[
-        "Someone leaves a bag behind and nobody claims it",
-        "A familiar face shows up and the night immediately feels wrong",
-        "The route changes without explanation and everyone acts normal",
-        "A small kindness feels like an accusation",
-        "A rumour arrives before the bus does"
-      ],
-      resp:[
-        "They make small talk until it becomes too personal",
-        "They avoid the obvious topic because it feels safer",
-        "They count stops like it's a coping mechanism",
-        "They share headphones and pretend it's nothing",
-        "They rehearse what they'll say and then don't say it"
-      ],
-      end:[
-        "They step off at the last stop and don't say goodbye",
-        "The bus keeps going. They don't",
-        "They sit in silence until the doors open again",
-        "Someone pays the other's fare and no one mentions it",
-        "They get off early and walk the rest on purpose"
-      ]
-    },
-    {
-      setting:"One room. One camera.",
-      tails:["TAKE","SCREEN","SIGNAL","STATIC","CUT"],
-      chars:[
-        "Someone who records voice memos to remember things and starts distrusting them",
-        "An artist who keeps restarting the scene to avoid the ending",
-        "A former reporter interviewing people who don't want to be a story",
-        "A person recreating memories using different wigs and voices",
-        "Someone trying to tell the truth without saying the obvious words"
-      ],
-      probs:[
-        "Scenes repeat with changes nobody explains",
-        "The recordings start contradicting each other in small ways",
-        "A memory keeps restarting at the worst moment",
-        "The story refuses to become a story",
-        "The footage starts looking staged even when it isn't"
-      ],
-      resp:[
-        "They edit the footage until the truth disappears",
-        "They keep filming because stopping would mean it mattered",
-        "They try to confess and keep turning it into a joke",
-        "They narrate everything and then hate their own voice",
-        "They delete parts and call it progress"
-      ],
-      end:[
-        "They stop trying",
-        "They walk away from the frame",
-        "They delete it",
-        "The lights go out",
-        "They save the file under a different name and pretend that helps"
-      ]
-    },
-    {
-      setting:"Late-night laundromat.",
-      tails:["LAUNDROMAT","SPIN CYCLE","CHANGE MACHINE","EMPTY CHAIR","WINDOW"],
-      chars:[
-        "A regular who knows the rhythm of the place and a newcomer who doesn't",
-        "Two people folding clothes like they're handling evidence",
-        "A parent washing one small load and pretending it's enough",
-        "A teenager killing time and an older stranger who won't stop talking",
-        "Someone waiting for a cycle to finish and someone waiting for a life to change"
-      ],
-      probs:[
-        "The change machine eats a coin and it feels symbolic",
-        "A missing sock becomes an accusation",
-        "The TV plays an old commercial that hits too hard",
-        "A spill happens and everyone overreacts politely",
-        "A note is taped to a machine and nobody admits they wrote it"
-      ],
-      resp:[
-        "They argue about detergent because the real topic is dangerous",
-        "They exchange small favours and call it community",
-        "They count minutes like it's a plan",
-        "They fold too slowly to avoid leaving",
-        "They pretend the noise is calming and fail"
-      ],
-      end:[
-        "They take their laundry and still feel unfinished",
-        "The last dryer stops and the silence feels personal",
-        "They leave one item behind on purpose",
-        "They walk out into the night and feel watched by streetlights",
-        "Nothing changes. Something does"
-      ]
-    }
+  const RATINGS = ["G","PG","PG-13","R"];
+  const RATINGS_EXP = ["PG","PG-13","PG-13","R","NR"];
+
+  const SETTINGS = [
+    { key:"airport", line:"Airport after midnight.", tails:["AIRPORT","TERMINAL","GATE 12","DEPARTURES BOARD","BAGGAGE CLAIM","SECURITY LINE"] },
+    { key:"diner", line:"Diner after midnight.", tails:["DINER","COUNTER","BOOTH","COFFEE POT","BACK ROOM","PARKING LOT"] },
+    { key:"library", line:"Town library closing.", tails:["LIBRARY","RETURN DESK","STACKS","BASEMENT ARCHIVE","LAST DAY","BOOK DROP"] },
+    { key:"bookstore", line:"Used bookstore closing.", tails:["BOOKSTORE","SHELVES","EMPTY AISLE","RECEIPT BOX","BACK OFFICE","WINDOW DISPLAY"] },
+    { key:"bus", line:"City bus route at night.", tails:["LAST STOP","TURNAROUND","BUS","SEAT 3B","TRANSFER","SHELTER"] },
+    { key:"hospital", line:"Hospital night shift.", tails:["NIGHT SHIFT","WAITING ROOM","HALLWAY","IV DRIP","SUPPLY CLOSET","ELEVATOR"] },
+    { key:"apartment", line:"Apartment building during a power outage.", tails:["STAIRWELL","HALLWAY","LOCKED DOOR","FIRE ESCAPE","UNIT 3B","LAUNDRY ROOM"] },
+    { key:"outdoor", line:"Outdoor movie night behind a community centre.", tails:["COMMUNITY CENTRE","WHITE SHEET","PROJECTOR","FOLDING CHAIRS","PARKING LOT","BACK FIELD"] },
+    { key:"roadtrip", line:"Long drive home.", tails:["HIGHWAY","GAS STATION","REST STOP","GLOVE COMPARTMENT","BACK SEAT","MILE MARKER"] },
+    { key:"smalltown", line:"Small town in early spring.", tails:["PORCH LIGHT","MAIN STREET","POST OFFICE","MOTEL","PINE ROAD","EMPTY FIELD"] },
+    { key:"onecam", line:"One room. One camera.", tails:["TAKE","FRAME","CUT","STATIC","MIC","LIGHT STAND"] },
+    { key:"laundromat", line:"Late-night laundromat.", tails:["CHANGE MACHINE","SPIN CYCLE","DRYER 7","PLASTIC CHAIR","SOAP DISPENSER","FRONT WINDOW"] }
   ];
 
-  function pickYear(rng, eraBias){
-    const ranges = {
-      classic:[{lo:1995,hi:2005,w:72},{lo:2006,hi:2012,w:28}],
-      mixed:  [{lo:1995,hi:2005,w:55},{lo:2006,hi:2012,w:45}],
-      modern: [{lo:1995,hi:2005,w:30},{lo:2006,hi:2012,w:70}]
-    };
-    const bucket = pickWeighted(rng, ranges[eraBias] || ranges.classic);
-    return Math.floor(bucket.lo + rng() * (bucket.hi - bucket.lo + 1));
+  // Characters / problems / actions / endings are keyed so they don't clash with setting.
+  const CHARACTERS = {
+    airport: [
+      "A parent travelling alone and a seatmate who asks too many questions",
+      "Two strangers waiting at the wrong gate for the same reason",
+      "A musician with a cracked instrument case and a friendly airport employee",
+      "A couple pretending they are coworkers",
+      "A traveller who keeps refreshing messages and a cleaner who keeps circling back"
+    ],
+    diner: [
+      "Two exes seated beside each other by accident",
+      "A night cook who hates small talk and a regular who needs it",
+      "A server finishing a double shift and a customer who will not leave",
+      "A divorced parent and their adult child pretending they are fine",
+      "A stranger who recognises someone and does not admit it"
+    ],
+    library: [
+      "A librarian refusing to perform gratitude for a donor",
+      "Two volunteers arguing over what deserves to be saved",
+      "A book club that cannot agree on what the closure means",
+      "A child asking where the books go and nobody answering correctly",
+      "A staff member who has memorised everyone’s routine"
+    ],
+    bookstore: [
+      "A buyer with a clipboard and a seller with too many memories",
+      "Two ex-friends trapped in the same aisle at the wrong time",
+      "A parent and child arguing quietly over what to keep",
+      "A staff member who keeps straightening the same display",
+      "A regular who knows the owner’s story too well"
+    ],
+    bus: [
+      "A person with a suitcase and a person with nothing at all",
+      "A teen who missed curfew and is trying not to panic",
+      "A driver who knows everyone’s story and pretends not to",
+      "Two strangers sitting too close because the bus is empty",
+      "A regular rider noticing a new face and regretting it"
+    ],
+    hospital: [
+      "A new hire trying to act like nothing affects them",
+      "A paramedic dropping off a patient they cannot forget",
+      "Coworkers flirting to distract themselves from the obvious",
+      "A nurse and a doctor who never finishes a sentence",
+      "A family asking for reassurance nobody can give"
+    ],
+    apartment: [
+      "Neighbours who have lived beside each other for years and never spoken",
+      "A landlord pretending everything is under control",
+      "A tenant who keeps making jokes and a tenant who will not laugh",
+      "Someone who cannot stop listening at doors",
+      "Two roommates discovering they do not actually like each other"
+    ],
+    outdoor: [
+      "A couple in charge of sound who keep arguing in whispers",
+      "Volunteers setting up a screen while pretending they are not angry",
+      "A host making announcements nobody listens to",
+      "A teenager embarrassed to be there and secretly moved by it",
+      "A parent trying to keep kids quiet and failing politely"
+    ],
+    roadtrip: [
+      "A parent and child trapped in a car with twenty years of silence",
+      "Two siblings driving to a funeral and pretending it is about traffic",
+      "A couple taking the long way home to avoid a conversation",
+      "A friend giving a ride they do not want to give",
+      "A driver who refuses to stop and a passenger who keeps asking"
+    ],
+    smalltown: [
+      "A newcomer asking questions nobody wants asked",
+      "A classmate who keeps showing up at the wrong time",
+      "A local who cannot stop narrating old history",
+      "A parent insisting nothing is wrong when it is",
+      "Someone returning and someone leaving"
+    ],
+    onecam: [
+      "An artist who keeps restarting the scene to avoid the ending",
+      "Someone recording voice memos to remember things and starting to distrust them",
+      "A former reporter interviewing people who do not want to be a story",
+      "A person recreating memories using wigs and borrowed voices",
+      "Someone trying to tell the truth without saying the obvious words"
+    ],
+    laundromat: [
+      "A regular who knows the rhythm of the place and a newcomer who doesn’t",
+      "Two people folding clothes like they are handling evidence",
+      "A parent washing one small load and pretending it is enough",
+      "A teenager killing time and an older stranger who will not stop talking",
+      "Someone waiting for a cycle to finish and someone waiting for a life to change"
+    ]
+  };
+
+  const PROBLEMS = {
+    airport: [
+      "A cancelled flight becomes a referendum on their life choices",
+      "They hear their name over the intercom and it is not good news",
+      "A delay stretches long enough for real feelings to show up",
+      "A voicemail arrives that changes the destination",
+      "Someone else recognises them first"
+    ],
+    diner: [
+      "They promised themselves they would not talk tonight",
+      "A small question lands like an accusation",
+      "A stranger claims to know something personal and will not say how",
+      "A polite conversation keeps turning into the past",
+      "One of them wants forgiveness and cannot ask for it"
+    ],
+    library: [
+      "Someone returns an overdue book and asks for forgiveness",
+      "A rumour spreads that the building will be demolished",
+      "A missing book becomes the day’s entire personality",
+      "A final event is scheduled and everyone acts like it is optional",
+      "A donation arrives with conditions no one wants to say out loud"
+    ],
+    bookstore: [
+      "An old receipt proves somebody lied about when they left town",
+      "A letter falls out of a hardback and changes the room",
+      "They realise they have been returning to the same shelf for years",
+      "A book goes missing and everyone pretends it is fine",
+      "The buyer wants a clean ending and the owner refuses to provide it"
+    ],
+    bus: [
+      "Someone leaves a bag behind and nobody claims it",
+      "A familiar face shows up and the night immediately feels wrong",
+      "The route changes without explanation and everyone acts normal",
+      "A small kindness feels like an accusation",
+      "They are heading the same direction for different reasons"
+    ],
+    hospital: [
+      "A small mistake becomes a quiet emergency",
+      "An empty bed becomes a question nobody answers",
+      "They realise they have been working around a lie",
+      "A chart goes missing and the room becomes suspicious",
+      "A patient says something kind and everyone panics a little"
+    ],
+    apartment: [
+      "A noise in the hallway becomes a collective obsession",
+      "A rumour turns into a fact within ten minutes",
+      "Someone admits they have been afraid the whole time",
+      "The building’s rules start sounding like threats",
+      "A locked door becomes symbolic and then actually matters"
+    ],
+    outdoor: [
+      "The projector keeps cutting out at the worst moments",
+      "The film choice becomes an accusation nobody says out loud",
+      "A rumour spreads about why the film was chosen",
+      "Someone recognises themselves in the film and does not laugh",
+      "The audience becomes a jury without meaning to"
+    ],
+    roadtrip: [
+      "A fight at a gas station cracks open something old",
+      "A wrong turn forces them onto roads they swore they would avoid",
+      "They keep talking about anything else and hate themselves for it",
+      "A message arrives that makes the destination feel incorrect",
+      "They rehearse an argument and choose the softer version"
+    ],
+    smalltown: [
+      "People whisper about what they saw but will not say it out loud",
+      "A missing person poster keeps reappearing after being taken down",
+      "A porch light turns on at the same hour every night",
+      "The town keeps offering help that feels like control",
+      "A lead appears and dies in the same day"
+    ],
+    onecam: [
+      "Scenes repeat with changes nobody explains",
+      "The recordings start contradicting each other in small ways",
+      "A memory keeps restarting at the worst moment",
+      "The story refuses to become a story",
+      "The footage starts looking staged even when it isn’t"
+    ],
+    laundromat: [
+      "The change machine eats a coin and it feels symbolic",
+      "A missing sock becomes an accusation",
+      "A note is taped to a machine and nobody admits they wrote it",
+      "A spill happens and everyone overreacts politely",
+      "The TV plays an old commercial that hits too hard"
+    ]
+  };
+
+  const ACTIONS = {
+    airport: [
+      "They keep checking the departures board like it is advice",
+      "They decide not to call anyone back",
+      "They walk the terminal in slow circles like it is exercise",
+      "They trade practical help because feelings are harder",
+      "They make small talk until it becomes too personal"
+    ],
+    diner: [
+      "They stop speaking and let the coffee go cold",
+      "They trade stories like bargaining chips",
+      "They talk about weather like it is a shield",
+      "They say the polite thing and hate it",
+      "They keep eating even after they stop tasting it"
+    ],
+    library: [
+      "They take photos like proof they were here",
+      "They argue politely and smile through it",
+      "They sort donations with the focus of people avoiding grief",
+      "They make a list of what mattered and hate the list",
+      "They keep checking the clock and pretend it is about time management"
+    ],
+    bookstore: [
+      "They read random passages out loud like it is a last rite",
+      "They tidy shelves because it is the only acceptable emotion",
+      "They bargain as if bargaining changes the ending",
+      "They keep circling back to the same section",
+      "They hold a book between them like a mediator"
+    ],
+    bus: [
+      "They avoid the obvious topic because it feels safer",
+      "They count stops like it is a coping mechanism",
+      "They rehearse what they will say and then don’t",
+      "They share silence as if it is agreement",
+      "They watch reflections in the window instead of each other"
+    ],
+    hospital: [
+      "They cling to procedure like it is morality",
+      "They wash their hands too long and call it professionalism",
+      "They joke too loudly and then stop",
+      "They volunteer for extra tasks and resent themselves for it",
+      "They speak in euphemisms until someone can’t anymore"
+    ],
+    apartment: [
+      "They sit on the stairs and listen for proof",
+      "They argue about rules because feelings are harder",
+      "They tell stories to fill the dark and regret every detail",
+      "They keep their doors cracked like compromise",
+      "They pretend it is fine and keep waiting for the lights"
+    ],
+    outdoor: [
+      "They pretend it is fine and keep adjusting the settings",
+      "They drift into side conversations that turn personal",
+      "They argue about logistics because the real topic is forbidden",
+      "They clap too hard to prove they are supportive",
+      "They keep checking the clock and pretending that is normal"
+    ],
+    roadtrip: [
+      "They stop for gas and do not look at each other",
+      "They take the long way and call it scenic",
+      "They keep the radio off like punishment",
+      "They apologise for the wrong thing",
+      "They talk about anything else until it hurts"
+    ],
+    smalltown: [
+      "They keep notes like the truth is a math problem",
+      "They ask one person too many and stop being welcome",
+      "They pretend coincidence is comfort",
+      "They hold a meeting that turns into a fight",
+      "They circle the same block like it will change"
+    ],
+    onecam: [
+      "They edit the footage until the truth disappears",
+      "They keep filming because stopping would mean it mattered",
+      "They narrate everything and then hate their own voice",
+      "They delete parts and call it progress",
+      "They restart again and again until the scene goes numb"
+    ],
+    laundromat: [
+      "They fold too slowly to avoid leaving",
+      "They argue about detergent because the real topic is dangerous",
+      "They exchange small favours and call it community",
+      "They count minutes like it is a plan",
+      "They stare at spinning clothes like it is hypnosis"
+    ]
+  };
+
+  const ENDS = {
+    airport: [
+      "They leave the airport and do not feel relieved",
+      "Someone leaves early",
+      "They sit quietly until the announcement stops mattering",
+      "They step outside and realise they forgot what they wanted",
+      "They go back through security even though they do not need to"
+    ],
+    diner: [
+      "They pay in silence and separate at the door",
+      "They do not talk about it again",
+      "One of them stays after the other leaves",
+      "They laugh once and regret it",
+      "They promise to text and both know they won’t"
+    ],
+    library: [
+      "The last book is checked out. The lights go off",
+      "Someone says see you next week out of habit and no one corrects them",
+      "They stand in the doorway too long and call it closure",
+      "The door locks with a sound that feels personal",
+      "They leave their cards on the counter like offerings"
+    ],
+    bookstore: [
+      "Nothing changes. Something does",
+      "They lock the door without ceremony",
+      "They leave with nothing they meant to buy",
+      "The last light gets switched off and nobody says anything",
+      "They take one book each and agree not to mention it"
+    ],
+    bus: [
+      "They step off at the last stop and do not say goodbye",
+      "The bus keeps going. They don’t",
+      "Someone pays the other’s fare and no one mentions it",
+      "They get off early and walk the rest on purpose",
+      "They sit until the doors open again and act surprised"
+    ],
+    hospital: [
+      "Patient dies. Everyone feels guilty",
+      "Morning arrives like an insult",
+      "They clock out and still feel on shift",
+      "They apologise to the wrong person and it is worse",
+      "They do everything correctly and still feel guilty"
+    ],
+    apartment: [
+      "The light keeps flickering",
+      "They go back inside and shut the door",
+      "Nobody admits what they heard",
+      "They sleep badly and call it normal",
+      "In the morning, they avoid eye contact in the lobby"
+    ],
+    outdoor: [
+      "Nobody feels redeemed",
+      "The room empties. The feeling stays",
+      "A kid falls asleep and that becomes the kindest ending",
+      "They pack up the chairs like they are hiding evidence",
+      "They drive home without turning the radio on"
+    ],
+    roadtrip: [
+      "It does not resolve. It just ends",
+      "They arrive and pretend arrival means anything",
+      "They sit in the driveway a long time",
+      "They apologise and it lands wrong",
+      "They agree to stop talking and keep talking"
+    ],
+    smalltown: [
+      "A lead appears and dies in the same day",
+      "They go home and say they are fine",
+      "They stop asking questions and call it maturity",
+      "They leave again without closure",
+      "The porch light turns on anyway"
+    ],
+    onecam: [
+      "They stop trying",
+      "They walk away from the frame",
+      "They delete it",
+      "The lights go out",
+      "They save the file under a different name and pretend that helps"
+    ],
+    laundromat: [
+      "They take their laundry and still feel unfinished",
+      "The last dryer stops and the silence feels personal",
+      "They leave one item behind on purpose",
+      "Nothing changes. Something does",
+      "They walk out into the night and feel watched by streetlights"
+    ]
+  };
+
+  // For base title parts (lots of options = fewer repeats)
+  const BASE_LEFT = [
+    "APRIL","WINTER","QUIET","LAST","EMPTY","FADING","BROKEN","BLUE","SECOND","RETURN","STATIC",
+    "LOW","SOFT","MISSING","BACK","THIN","COLD","WIDE","SILENT","OPEN","CLOSED","FINAL","DUST",
+    "PORCH","HALLWAY","RECEIPT","LETTER","PROJECTOR","VENDING","LIBRARY","GATE","WINDOW","PAPER",
+    "KITE","GARAGE","BENCH","SIGNAL","MAP","ORDER","DRIVER","TURNAROUND","FIELD","PINE"
+  ];
+
+  const BASE_RIGHT = [
+    "LIGHT","MACHINE","HUM","CARD","TICKET","DATE","AISLE","SHELF","CLOCK","STRING","CHAIRS",
+    "DRIP","SCREEN","CUT","TAKE","STATIC","VOICEMAIL","JACKET","POSTER","BOARD","KEY","BOAT",
+    "BENCH","HALLWAY","STAIRWELL","RETURN","ORDER","RECEIPT","SIGNAL","WINDOW","MAP","FIELD"
+  ];
+
+  const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
+
+  function makeBase(){
+    const a = pick(BASE_LEFT);
+    const b = pick(BASE_RIGHT);
+    return dedupeWordRuns(`${a} ${b}`);
   }
 
-  function pickRuntime(rng, genre){
-    const isShort = /Experimental/.test(genre);
-    const isAnim  = /^Animated/.test(genre);
-    if (isShort) return clamp(Math.floor(35 + rng()*22), 35, 60);
-    if (isAnim)  return clamp(Math.floor(78 + rng()*30), 70, 110);
-    return clamp(Math.floor(84 + rng()*28), 80, 110);
-  }
-
-  function makeSynopsis(scene, rng, tone){
-    const chars = pick(rng, scene.chars);
-    const prob  = pick(rng, scene.probs);
-    const resp  = pick(rng, scene.resp);
-    const end   = pick(rng, scene.end);
-    const add   = pick(rng, (TONE_ADD[tone] || TONE_ADD.reels));
-    return `"` + `${scene.setting} ${chars}. ${prob}. ${resp}. ${end}${add}`.replace(/\s+/g," ").trim() + `"`;
-  }
-
-  function makeBase(rng){
-    const adj = pick(rng, BASE_ADJ);
-    const noun = pick(rng, BASE_NOUN);
-    let base = `${adj} ${noun}`.replace(/\s+/g," ").trim();
-    base = stripLeadingArticle(base);
-    base = dedupeNeighborWords(base);
-    return base;
-  }
-
-  function makeTail(rng, scene){
-    const useTime = rng() < 0.26;
-    if (useTime) return pick(rng, TIME_TAIL);
-    // coherence: prefer scene tails most of the time
-    if (scene && scene.tails && rng() < 0.75) return pick(rng, scene.tails);
-    return pick(rng, PLACE_TAIL);
-  }
-
-  function signature(entry){
-    return [entry.title, entry.year, entry.runtime, entry.genre, entry.rating, entry.synopsis].join("|");
-  }
-
-  function formatEntry(e){
-    return `${e.title} (${e.year})
-Runtime: ${e.runtime} min
-Genre: ${e.genre}
-Rating: ${e.rating}
-${e.synopsis}
-`;
-  }
-
-  const $count = document.getElementById("count");
-  const $era   = document.getElementById("era");
-  const $tone  = document.getElementById("tone");
-  const $seed  = document.getElementById("seed");
-  const $out   = document.getElementById("out");
-  const $note  = document.getElementById("note");
-
-  const $pillTitles = document.getElementById("pillTitles");
-  const $pillEntries = document.getElementById("pillEntries");
-  const $pillStatus = document.getElementById("pillStatus");
-
-  function setStatus(html){ $pillStatus.innerHTML = `Status: ${html}`; }
-
-  function updatePills(){
-    const st = loadSet(LS_TITLES);
-    const ss = loadSet(LS_SIGS);
-    $pillTitles.textContent = `Seen titles: ${st.size}`;
-    $pillEntries.textContent = `Seen entries: ${ss.size}`;
-  }
-
-  function generate(){
-    try {
-      setStatus(`<span class="warn">generating…</span>`);
-      $note.textContent = "";
-
-      const count = clamp(parseInt($count.value || "5", 10), 1, 10);
-      const eraBias = $era.value;
-      const tone = $tone.value;
-      const click = bumpClickIndex();
-      const userSeed = ($seed.value || "").trim();
-
-      const seedStr = `${userSeed || "yesterdays-reels"}#${eraBias}#${tone}#${click}`;
-      const rng = makeRng(seedStr);
-
-      const seenTitles = loadSet(LS_TITLES);
-      const seenSigs   = loadSet(LS_SIGS);
-
-      const inRunTitles = new Set();
-      const inRunSigs = new Set();
-
-      let out = `Available Film Catalogue\n\n`;
-      let made = 0;
-      let attempts = 0;
-
-      const MAX_ATTEMPTS_PER_ENTRY = 140;
-
-      for (let i = 0; i < count; i++) {
-        let entry = null;
-
-        for (let a = 0; a < MAX_ATTEMPTS_PER_ENTRY; a++) {
-          attempts++;
-          const scene = pick(rng, SCENES);
-          const base = makeBase(rng);
-          const tail = makeTail(rng, scene);
-          const title = buildTitle(rng, base, tail);
-
-          const titleKey = title.toUpperCase();
-          if (seenTitles.has(titleKey) || inRunTitles.has(titleKey)) continue;
-
-          const genre = pickWeighted(rng, GENRES);
-          const rating = pickWeighted(rng, RATINGS);
-          const year = pickYear(rng, eraBias);
-          const runtime = pickRuntime(rng, genre);
-          const synopsis = makeSynopsis(scene, rng, tone);
-
-          const candidate = { title, year, runtime, genre, rating, synopsis };
-          const sig = signature(candidate);
-
-          if (seenSigs.has(sig) || inRunSigs.has(sig)) continue;
-
-          entry = candidate;
-          inRunTitles.add(titleKey);
-          inRunSigs.add(sig);
-          break;
-        }
-
-        if (!entry) break;
-
-        out += formatEntry(entry) + "\n";
-
-        seenTitles.add(entry.title.toUpperCase());
-        seenSigs.add(signature(entry));
-        made++;
-      }
-
-      saveSet(LS_TITLES, seenTitles);
-      saveSet(LS_SIGS, seenSigs);
-
-      $out.value = out.trim() + "\n";
-      updatePills();
-
-      if (made < count) {
-        $note.textContent = `Generated ${made}/${count}. If this keeps happening, click “Reset anti-repeat memory”.`;
-      }
-
-      setStatus(`<span class="ok">ok</span>`);
-    } catch (err) {
-      console.error(err);
-      setStatus(`<span class="warn">error</span>`);
-      $note.textContent = "Generator error. Open DevTools Console to see it (Command+Option+J on Mac / Ctrl+Shift+J on Windows).";
+  function pickYear(bias){
+    const r = Math.random();
+    if (bias === "classic"){
+      return r < 0.78 ? randInt(1995,2005) : randInt(2006,2012);
     }
+    if (bias === "modern"){
+      return r < 0.68 ? randInt(2006,2012) : randInt(1995,2005);
+    }
+    return r < 0.55 ? randInt(1995,2005) : randInt(2006,2012);
   }
 
-  async function copy(){
+  function runtimeFor(genre){
+    const short = /Experimental/.test(genre) ? chance(0.60) : false;
+    const animated = /^Animated/.test(genre);
+
+    if (short) return randInt(35, 60);
+    if (animated) return randInt(78, 104);
+    return randInt(84, 107);
+  }
+
+  // Prevent repeats within a single click
+  function generateBatch(n, eraBias, genreBias){
+    const usedTitles = new Set();
+    const usedCombos = new Set(); // to reduce “same scene + same character + same problem” repeats
+
+    let out = "Available Film Catalogue\n\n";
+
+    for (let i = 0; i < n; i++){
+      let tries = 0;
+      let title, entry;
+
+      while (tries++ < 120){
+        const setting = pick(SETTINGS);
+        const genre = pick(GENRES[genreBias] || GENRES.drama);
+        const rating = /Experimental/.test(genre) ? pick(RATINGS_EXP) : pick(RATINGS);
+        const year = pickYear(eraBias);
+        const runtime = runtimeFor(genre);
+
+        const tail = chance(0.28) ? pick(TIME_TAILS) : pick(setting.tails);
+        title = buildTitle(makeBase(), tail);
+
+        // Coherent synopsis structure: Setting -> Characters -> Problem -> Action -> End
+        const chars = pick(CHARACTERS[setting.key]);
+        const prob  = pick(PROBLEMS[setting.key]);
+        const act   = pick(ACTIONS[setting.key]);
+        const end   = pick(ENDS[setting.key]);
+
+        const comboKey = `${setting.key}|${chars}|${prob}|${act}|${end}`;
+        if (usedTitles.has(title)) continue;
+        if (usedCombos.has(comboKey)) continue;
+
+        usedTitles.add(title);
+        usedCombos.add(comboKey);
+
+        let synopsis = `“${setting.line} ${chars}. ${prob}. ${act}. ${end}.”`;
+        synopsis = capSentence(synopsis);
+        synopsis = dedupeWordRuns(synopsis);
+
+        entry = `${title} (${year})
+Runtime: ${runtime} min
+Genre: ${genre}
+Rating: ${rating}
+${synopsis}
+`;
+        break;
+      }
+
+      if (!entry) break;
+      out += entry + "\n";
+    }
+
+    return out.trim() + "\n";
+  }
+
+  // ===== UI wiring =====
+  const $count = document.getElementById("count");
+  const $era = document.getElementById("era");
+  const $genreBias = document.getElementById("genreBias");
+  const $out = document.getElementById("out");
+  const $note = document.getElementById("note");
+
+  document.getElementById("generate").addEventListener("click", () => {
+    const n = Math.max(1, Math.min(10, parseInt($count.value || "5", 10)));
+    const text = generateBatch(n, $era.value, $genreBias.value);
+    $out.value = text;
+    $note.textContent = "Generated.";
+  });
+
+  document.getElementById("copy").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText($out.value || "");
       $note.textContent = "Copied.";
     } catch {
-      // fallback
       $out.focus();
       $out.select();
       document.execCommand("copy");
       $note.textContent = "Copied.";
     }
-  }
+  });
 
-  function resetMemory(){
-    localStorage.removeItem(LS_TITLES);
-    localStorage.removeItem(LS_SIGS);
-    updatePills();
-    $note.textContent = "Anti-repeat memory cleared.";
-  }
-
-  document.getElementById("generate").addEventListener("click", generate);
-  document.getElementById("copy").addEventListener("click", copy);
-  document.getElementById("reset").addEventListener("click", resetMemory);
-
-  updatePills();
-  generate(); // initial output so you can see it working immediately
-});
+  // initial output so it never looks “dead”
+  $out.value = generateBatch(5, "classic", "drama");
+})();
 </script>
 </body>
 </html>
