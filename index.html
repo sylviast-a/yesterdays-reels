@@ -94,6 +94,7 @@
       <span class="pill">no backend</span>
       <span class="pill">DVD-era</span>
       <span class="pill">festival-adjacent</span>
+      <span class="pill">anti-hype</span>
     </p>
 
     <div class="about">
@@ -113,7 +114,7 @@
         <div class="row">
           <div>
             <label for="count">How many films?</label>
-            <input id="count" type="number" min="1" max="50" value="5" />
+            <input id="count" type="number" min="1" max="80" value="5" />
           </div>
           <div>
             <label for="tone">Catalogue bias</label>
@@ -121,6 +122,7 @@
               <option value="house" selected>House style (indie drama)</option>
               <option value="festival">Festival films (more experimental)</option>
               <option value="lighter">Lighter (more G/PG)</option>
+              <option value="noir">Noir-ish (human menace, not supernatural)</option>
             </select>
           </div>
         </div>
@@ -152,13 +154,15 @@
           <summary>No repeats + coherence rules</summary>
           <div class="fine">
             Each film uses a strict structure: <b>Setting → Characters → Problem → Response → End</b>.
-            The setting is stated once (opening sentence only). Titles are setting-aware.
-            Repeats are blocked using a signature stored in your browser (localStorage). Seeded runs stay unique because the seed is salted per click.
+            The setting is stated once (opening sentence). Titles are setting-aware.
+            Repeats are blocked using a signature stored in your browser (localStorage).
+            Seeded runs stay unique because the seed is salted per click.
           </div>
         </details>
 
         <div class="fine">
-          If you request a huge count repeatedly, you can outrun the pool. Reset no-repeat memory to start fresh.
+          This version has a much bigger pool (more settings + more lines per setting + extra “quiet endings”).
+          If you still see repeats, you’re generating fast enough to exhaust a specific vibe. Reset no-repeat memory to restart.
         </div>
       </section>
 
@@ -194,12 +198,20 @@ function r(rng) { return rng ? rng() : Math.random(); }
 function pick(arr, rng) { return arr[Math.floor(r(rng) * arr.length)]; }
 function chance(p, rng) { return r(rng) < p; }
 function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+function shuffle(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(r(rng) * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 /* =========================
    No-repeat persistence
 ========================= */
-const STORAGE_KEY = "yesterdays_reels_seen_v4";
-const CLICK_KEY   = "yesterdays_reels_clicks_v4";
+const STORAGE_KEY = "yesterdays_reels_seen_v5";
+const CLICK_KEY   = "yesterdays_reels_clicks_v5";
 
 function loadSeen() {
   try {
@@ -227,404 +239,622 @@ function bumpClickCount() {
 let seen = loadSeen();
 
 /* =========================
-   Catalogue data
+   Global phrase banks (more variety)
 ========================= */
+const QUIET_END_CAPS = [
+  "Snow keeps falling.",
+  "They don’t talk about it again.",
+  "Nobody feels redeemed.",
+  "It doesn’t resolve. It just ends.",
+  "They call it closure. It isn’t.",
+  "Morning arrives like a verdict.",
+  "The room empties. The feeling stays.",
+  "A door closes softly.",
+  "They go home and say they’re fine.",
+  "The light keeps flickering.",
+  "They keep living anyway.",
+  "Nothing changes. Something does.",
+  "They stop trying.",
+  "Someone leaves early.",
+  "They make a promise they won’t keep.",
+  "They laugh once and regret it."
+];
 
+const SOFT_ACTIONS = [
+  "They make tea and treat it like a ritual.",
+  "They fold something slowly.",
+  "They keep their voice even on purpose.",
+  "They rehearse the conversation in their head and never have it.",
+  "They stare at a receipt like it’s evidence.",
+  "They clean up because they can’t fix anything else.",
+  "They read an old letter twice.",
+  "They take a walk and pretend it’s a plan.",
+  "They keep checking the clock.",
+  "They drive without turning the radio on.",
+  "They sit down and don’t stand back up for a while."
+];
+
+/* =========================
+   Settings (expanded heavily)
+========================= */
 /**
- * Coherence model:
- * - Pick ONE setting per film.
- * - Setting is only stated once (opening sentence).
- * - Characters/Problem/Response/End are setting-specific, so fragments don't clash.
- * - Title nouns/adjs are setting-specific, so titles match the film.
+ * Each setting includes:
+ * - settingLine (used once)
+ * - titleNouns/titleAdjs (setting-aware titles)
+ * - characters/problems/responses/endings (bigger pools reduce repeats)
  */
 const SETTINGS = [
+  /* ---- DINER ---- */
   {
     tag: "diner",
     settingLine: "Diner after midnight.",
-    titleAdjs: ["MIDNIGHT","QUIET","COLD","LAST","FADING","WINTER","BLUE"],
-    titleNouns: ["CARSON’S DINER","LATE COFFEE","NEON SIGN","THE BACK BOOTH","OPEN ALL NIGHT","LAST ORDER","THE PARKING LOT"],
+    titleAdjs: ["MIDNIGHT","QUIET","COLD","LAST","FADING","WINTER","BLUE","SECOND","EMPTY"],
+    titleNouns: ["CARSON’S DINER","LATE COFFEE","NEON SIGN","THE BACK BOOTH","OPEN ALL NIGHT","LAST ORDER","THE PARKING LOT","THE CHECK","SUGAR PACKETS"],
     characters: [
       "Lonely waitress and a drifter with nowhere to sleep.",
       "Two regulars who only speak when the place is empty.",
       "A cook who watches the door like he’s waiting for someone.",
       "A couple who promised themselves they wouldn’t talk tonight.",
-      "A teenager killing time and an older stranger who keeps offering advice."
+      "A teenager killing time and an older stranger who keeps offering advice.",
+      "A cashier who knows everyone’s name and a customer who refuses to be known.",
+      "Two exes accidentally seated beside each other at the counter.",
+      "A night-shift worker and someone pretending to be one."
     ],
     problems: [
       "A conversation turns into a confession neither of them planned to make.",
       "Someone asks a question that lands like an accusation.",
       "They recognize each other, and neither admits it.",
       "A small lie gets repeated until it becomes the only thing they have.",
-      "A phone rings once and then never again."
+      "A phone rings once and then never again.",
+      "A stranger claims to know something personal and won’t say how.",
+      "Someone leaves a note under a plate and denies it later.",
+      "A storm keeps the door from opening, and nobody says they’re relieved."
     ],
     responses: [
       "They talk in circles until the truth slips out by accident.",
       "They try to keep it casual, and fail.",
       "They stop speaking and let the coffee go cold.",
       "They trade stories like bargaining chips.",
-      "They laugh once, then regret it."
+      "They laugh once, then regret it.",
+      "They pretend they’re strangers because it’s easier.",
+      "They argue politely like they’re in public, because they are.",
+      "They split a slice of pie like it’s a peace treaty."
     ],
     endings: [
       "They kiss. He leaves before morning.",
       "They pay in silence and separate at the door.",
       "The booths empty out. The neon keeps flickering.",
       "The sun shows up like it wasn’t invited.",
-      "They promise to call. Nobody believes it."
+      "They promise to call. Nobody believes it.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- BUS ---- */
   {
     tag: "bus",
     settingLine: "City bus route at night.",
-    titleAdjs: ["LAST","NIGHT","EMPTY","WINTER","SECOND","QUIET","APRIL"],
-    titleNouns: ["LAST BUS","LAST STOP","TRANSFER SLIP","WINDOW SEAT","THE ROUTE","NIGHT LINE","BUS STOP IN APRIL","THE DRIVER"],
+    titleAdjs: ["LAST","NIGHT","EMPTY","WINTER","SECOND","QUIET","APRIL","BLUE","FADING"],
+    titleNouns: ["LAST BUS","LAST STOP","TRANSFER SLIP","WINDOW SEAT","THE ROUTE","NIGHT LINE","BUS STOP IN APRIL","THE DRIVER","THE SCHEDULE","THE TURNAROUND"],
     characters: [
       "Teen misses curfew and ends up riding the bus all night.",
       "Two strangers sit across from each other and keep pretending not to listen.",
       "A tired driver recognizes the passengers who have nowhere else to go.",
       "A student carrying a secret and a parent who won’t ask directly.",
-      "Someone coming home late and someone leaving early."
+      "Someone coming home late and someone leaving early.",
+      "A person with a suitcase and a person with nothing at all.",
+      "A regular rider who notices when the driver is different.",
+      "A night-shift employee and a person following them at a distance."
     ],
     problems: [
       "A missed stop turns into a long loop with no good way to get home.",
       "Someone is carrying news they don’t want to deliver.",
       "A familiar face shows up, and the night immediately feels wrong.",
       "The route changes without warning and everyone acts like it’s normal.",
-      "A storm starts and the bus becomes the only warm room left."
+      "A storm starts and the bus becomes the only warm room left.",
+      "A passenger refuses to get off at the end of the line.",
+      "The bus keeps returning to the same corner like it’s stuck in a thought.",
+      "Someone leaves a bag behind and nobody claims it."
     ],
     responses: [
       "They make small talk until it becomes too personal.",
       "They avoid the obvious topic because it feels safer.",
       "They keep riding because getting off would mean deciding.",
       "They watch the reflections in the glass instead of each other.",
-      "They tell the truth like it’s a joke and hope it lands that way."
+      "They tell the truth like it’s a joke and hope it lands that way.",
+      "They count the stops like it’s a coping strategy.",
+      "They text someone who doesn’t reply and keep the screen lit anyway.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "They step off at the last stop and don’t say goodbye.",
       "Morning arrives and nothing feels solved.",
       "The driver changes and everything feels different.",
       "The bus keeps moving after they get off.",
-      "They go home and say they were fine."
+      "They go home and say they were fine.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- BOOKSTORE ---- */
   {
     tag: "bookstore",
     settingLine: "Used bookstore closing.",
-    titleAdjs: ["OLD","QUIET","EMPTY","LAST","BROKEN","FADING","WINTER"],
-    titleNouns: ["DUST ON THE SHELF","CLOSING TIME","THE LAST BOOK","MARGIN NOTES","THE REGISTER","BACK ROOM","EMPTY AISLE","USED PAPERBACKS"],
+    titleAdjs: ["OLD","QUIET","EMPTY","LAST","BROKEN","FADING","WINTER","SECOND","BLUE"],
+    titleNouns: ["DUST ON THE SHELF","CLOSING TIME","THE LAST BOOK","MARGIN NOTES","THE REGISTER","BACK ROOM","EMPTY AISLE","USED PAPERBACKS","THE RECEIPT","BOXES"],
     characters: [
       "Owner and a customer who has been coming in for years.",
       "Two ex-friends forced into the same aisle at the wrong time.",
       "A teenager and an elderly clerk who refuses to sentimentalize it.",
       "A regular who thinks the store saved their life and a clerk who won’t confirm it.",
-      "A parent and child arguing quietly over what to keep."
+      "A parent and child arguing quietly over what to keep.",
+      "A buyer with a clipboard and a seller with too many memories.",
+      "A poet who can’t finish anything and a cashier who never starts.",
+      "A customer returning a book they clearly didn’t read."
     ],
     problems: [
       "The last day turns into an inventory of old disappointments.",
       "A note falls out of a book and changes what they thought they knew.",
       "Someone offers help, and it feels like pity.",
       "A buyer shows up with a clipboard and no nostalgia.",
-      "They realize they’ve been returning to the same shelf for years."
+      "They realize they’ve been returning to the same shelf for years.",
+      "An old receipt proves somebody lied about when they left town.",
+      "The keys go missing and everyone blames everyone politely.",
+      "A regular asks to buy a chair like it’s a relic."
     ],
     responses: [
       "They argue quietly near the register and pretend it’s about money.",
       "They box up the shelves like it’s a funeral ritual.",
       "They keep talking because silence would be worse.",
       "They look for something specific and settle for something close.",
-      "They try to act practical and fail."
+      "They try to act practical and fail.",
+      "They bargain as if bargaining changes the ending.",
+      "They read random passages out loud like it’s a last rite.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "The door locks for the last time.",
       "They leave with nothing they meant to buy.",
       "Someone stays behind after closing.",
       "A light gets switched off and nobody says anything.",
-      "They carry boxes out like proof."
+      "They carry boxes out like proof.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- APARTMENT OUTAGE ---- */
   {
     tag: "apartment_outage",
     settingLine: "Apartment building during a power outage.",
-    titleAdjs: ["STATIC","SILENT","DARK","SECOND","BROKEN","QUIET","LAST"],
-    titleNouns: ["WHEN THE LIGHTS GO OUT","HALLWAY CANDLES","APARTMENT 3B","THE STAIRWELL","LOCKED DOOR","THE LANDING","ELEVATOR SIGN"],
+    titleAdjs: ["STATIC","SILENT","DARK","SECOND","BROKEN","QUIET","LAST","WINTER","FADING"],
+    titleNouns: ["WHEN THE LIGHTS GO OUT","HALLWAY CANDLES","APARTMENT 3B","THE STAIRWELL","LOCKED DOOR","THE LANDING","ELEVATOR SIGN","STAIRWELL TALK","THE FUSE BOX"],
     characters: [
       "Strangers stuck on the same landing with nowhere to go.",
       "A neighbour who overshares and another who refuses to participate.",
       "Two people who have lived beside each other for years and never spoken.",
       "A couple mid-fight forced to sit with an audience.",
-      "A tenant who wants to be helpful and a tenant who wants to be left alone."
+      "A tenant who wants to be helpful and a tenant who wants to be left alone.",
+      "A child who isn’t afraid and an adult who is.",
+      "A landlord pretending it’s under control.",
+      "Someone locked out and someone refusing to open their door."
     ],
     problems: [
       "The dark makes everyone say what they normally edit out.",
       "A noise in the hallway becomes a collective obsession.",
       "Someone admits they’ve been afraid the whole time.",
       "A locked door turns into a moral argument.",
-      "A small emergency happens and nobody knows who to call."
+      "A small emergency happens and nobody knows who to call.",
+      "A flashlight dies at the worst moment.",
+      "A rumour starts and becomes a fact within ten minutes.",
+      "The elevator stops and a voice answers from inside."
     ],
     responses: [
       "They trade flashlights and pretend it’s generosity, not anxiety.",
       "They tell stories to fill the dark and regret every detail.",
       "They make a plan that won’t survive morning.",
       "They comfort each other and then resent it.",
-      "They argue about rules because feelings are harder."
+      "They argue about rules because feelings are harder.",
+      "They decide on a ‘buddy system’ like it’s camp and nobody laughs.",
+      "They sit on the stairs and listen for proof.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "The lights come back. Nobody feels better.",
       "They go back inside and shut the door.",
       "Someone leaves before it’s resolved.",
       "The hallway empties and the noise continues anyway.",
-      "They promise to be neighbours. It doesn’t stick."
+      "They promise to be neighbours. It doesn’t stick.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- AIRPORT ---- */
   {
     tag: "airport",
     settingLine: "Airport after midnight.",
-    titleAdjs: ["LAST","WINTER","QUIET","LONG","STATIC","SECOND","APRIL"],
-    titleNouns: ["RUNNING LATE","GATE 12","DEPARTURES","BOARDING PASS","THE LAST FLIGHT","THE TERMINAL","CONCOURSE LIGHTS","WAITING AREA"],
+    titleAdjs: ["LAST","WINTER","QUIET","LONG","STATIC","SECOND","APRIL","FADING","EMPTY"],
+    titleNouns: ["RUNNING LATE","GATE 12","DEPARTURES","BOARDING PASS","THE LAST FLIGHT","THE TERMINAL","CONCOURSE LIGHTS","WAITING AREA","ARRIVALS","VENDING MACHINE"],
     characters: [
       "Business traveller who missed the last flight and a stranger who didn’t.",
       "Two people waiting at the wrong gate for the same reason.",
       "A couple quietly ending things beside a vending machine.",
       "A tired employee cleaning around people who don’t want to go home.",
-      "A parent travelling alone and a seatmate who asks too many questions."
+      "A parent travelling alone and a seatmate who asks too many questions.",
+      "Someone who keeps checking their phone and someone who keeps watching them.",
+      "A musician with a broken case and a stranger offering unsolicited advice.",
+      "A person meeting nobody at Arrivals."
     ],
     problems: [
       "A delay stretches long enough for real feelings to show up.",
       "A phone call doesn’t come, and they stop pretending it will.",
       "They realize they’re both running away—just in different directions.",
       "A cancelled flight becomes a referendum on their life choices.",
-      "They hear their name over the intercom and it isn’t good news."
+      "They hear their name over the intercom and it isn’t good news.",
+      "A lost bag turns into a larger accusation.",
+      "They run into someone they promised they’d never see again.",
+      "Someone offers a ride and it feels like a threat."
     ],
     responses: [
       "They talk all night like it counts as closure.",
       "They keep checking the departures board like it’s advice.",
       "They decide not to call anyone back.",
       "They share snacks like it’s a contract.",
-      "They tell the truth too early and spend the rest of the night repairing it."
+      "They tell the truth too early and spend the rest of the night repairing it.",
+      "They trade small confessions and pretend it’s casual.",
+      "They walk the terminal in slow circles like it’s exercise.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "They part without exchanging names.",
       "Nothing changes. They still feel different.",
       "The lights stay too bright.",
       "They board a flight and carry the conversation with them.",
-      "They leave the airport and don’t feel relieved."
+      "They leave the airport and don’t feel relieved.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- HOSPITAL ---- */
   {
     tag: "hospital",
     settingLine: "Hospital night shift.",
-    titleAdjs: ["NIGHT","SILENT","COLD","STATIC","LAST","SECOND","FADING"],
-    titleNouns: ["NIGHT SHIFT","WAITING ROOM","WARD C","FLUORESCENT LIGHTS","THE BREAK ROOM","CHARTS","THE ELEVATOR","THE CALL BUTTON"],
+    titleAdjs: ["NIGHT","SILENT","COLD","STATIC","LAST","SECOND","FADING","EMPTY","WINTER"],
+    titleNouns: ["NIGHT SHIFT","WAITING ROOM","WARD C","FLUORESCENT LIGHTS","THE BREAK ROOM","CHARTS","THE ELEVATOR","THE CALL BUTTON","THE HALLWAY","IV DRIP"],
     characters: [
       "Two nurses and a doctor who never finishes a sentence.",
       "A new hire trying to act like nothing affects them.",
       "Coworkers flirting to distract themselves from the obvious.",
       "A night receptionist who hears every story twice.",
-      "A family waiting and a staff member who wants to be kind but can’t."
+      "A family waiting and a staff member who wants to be kind but can’t.",
+      "A paramedic dropping off a patient they can’t forget.",
+      "A janitor who notices everything and says nothing.",
+      "A patient who keeps apologizing."
     ],
     problems: [
       "A patient takes a turn and nobody can admit they saw it coming.",
       "A small mistake becomes a quiet emergency.",
       "The shift stretches on and their patience runs out.",
       "An empty bed becomes a question nobody answers.",
-      "A call comes in and the tone is already wrong."
+      "A call comes in and the tone is already wrong.",
+      "They realize they’ve been working around a lie.",
+      "A family asks for reassurance nobody can give.",
+      "Someone walks out and doesn’t come back."
     ],
     responses: [
       "They joke too loudly and then stop.",
       "They wash their hands too long and call it professionalism.",
       "They avoid eye contact and keep moving.",
       "They do everything correctly and still feel guilty.",
-      "They take a break that doesn’t help."
+      "They take a break that doesn’t help.",
+      "They cling to procedure like it’s morality.",
+      "They argue about paperwork because it’s safer than grief.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "Patient dies. Everyone feels guilty.",
       "Morning arrives like an insult.",
       "They clock out and don’t talk about it.",
       "A hallway light flickers and nobody looks up.",
-      "They drive home and replay the night."
+      "They drive home and replay the night.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- ROADTRIP ---- */
   {
     tag: "roadtrip",
     settingLine: "Long drive home.",
-    titleAdjs: ["LONG","WINTER","QUIET","LAST","SECOND","BROKEN","FADING"],
-    titleNouns: ["THE LONG DRIVE HOME","GAS STATION RECEIPT","MILE MARKERS","THE BACK SEAT","WINDOW GLASS","THE HIGHWAY","ROAD MAP","THE EXIT"],
+    titleAdjs: ["LONG","WINTER","QUIET","LAST","SECOND","BROKEN","FADING","EMPTY","BLUE"],
+    titleNouns: ["THE LONG DRIVE HOME","GAS STATION RECEIPT","MILE MARKERS","THE BACK SEAT","WINDOW GLASS","THE HIGHWAY","ROAD MAP","THE EXIT","EMPTY TANK","REST STOP"],
     characters: [
       "Father and son trapped in a car with twenty years of silence.",
       "Two siblings driving back for a funeral they don’t want to attend.",
       "A couple taking the long way because home feels worse.",
       "A driver who refuses to stop and a passenger who keeps asking.",
-      "Someone returning to town and someone leaving it behind."
+      "Someone returning to town and someone leaving it behind.",
+      "A friend along for the ride who doesn’t belong in the story.",
+      "A parent teaching a teenager how to drive and failing at it.",
+      "Two people who used to love each other trying to be polite."
     ],
     problems: [
       "A fight at a gas station cracks open something old.",
       "A song on the radio triggers a memory nobody asked for.",
       "They realize they’ve been rewriting the past to survive it.",
       "The car breaks down and the waiting becomes the point.",
-      "A wrong turn forces them onto roads they swore they’d avoid."
+      "A wrong turn forces them onto roads they swore they’d avoid.",
+      "They pass the place it happened and nobody mentions it.",
+      "A voicemail arrives that changes the destination.",
+      "They run out of things to talk about and keep talking anyway."
     ],
     responses: [
       "They argue about a detail because the real issue is too big.",
       "They drive in silence until it becomes unbearable.",
       "They say the thing they avoided for years.",
       "They talk about anything else and hate themselves for it.",
-      "They apologize without admitting what for."
+      "They apologize without admitting what for.",
+      "They stop for food and treat it like a reset button.",
+      "They rehearse the fight and choose a softer version.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "Emotional breakthrough in the car. The road stays the same.",
       "They keep driving anyway.",
       "They get home and nothing is fixed.",
       "They pull into the driveway and sit for too long.",
-      "They arrive and pretend the trip was normal."
+      "They arrive and pretend the trip was normal.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- LIBRARY ---- */
   {
     tag: "library",
     settingLine: "Town library closing.",
-    titleAdjs: ["LAST","QUIET","OLD","WINTER","EMPTY","SECOND","FADING"],
-    titleNouns: ["THE LAST LIBRARY DAY","FINAL READING","LIBRARY CARDS","RETURN DATE","STACKS","SILENCE POLICY","THE BOOK DROP","COMMUNITY ROOM"],
+    titleAdjs: ["LAST","QUIET","OLD","WINTER","EMPTY","SECOND","FADING","BLUE","BROKEN"],
+    titleNouns: ["THE LAST LIBRARY DAY","FINAL READING","LIBRARY CARDS","RETURN DATE","STACKS","SILENCE POLICY","THE BOOK DROP","COMMUNITY ROOM","OVERDUE","THE CATALOGUE"],
     characters: [
       "Librarian and a regular who treats the building like a friend.",
       "Staff organizing the final reading event while pretending it’s normal.",
       "A teenager who only realizes what it meant on the last day.",
       "Two volunteers arguing over what deserves to be saved.",
-      "A parent bringing a child one last time, hoping it becomes a memory."
+      "A parent bringing a child one last time, hoping it becomes a memory.",
+      "A donor expecting gratitude and a librarian refusing to perform it.",
+      "A clerk who knows the catalogue by heart and a customer who never returned anything.",
+      "A book club that can’t agree on what the closure means."
     ],
     problems: [
       "The goodbye event feels like a performance they didn’t rehearse.",
       "A donor offers money too late and expects gratitude.",
       "Someone returns an overdue book and asks for forgiveness.",
       "They discover the closure was decided years ago.",
-      "A list of ‘final borrowers’ feels like a funeral program."
+      "A list of ‘final borrowers’ feels like a funeral program.",
+      "A rumour spreads that the building will be demolished.",
+      "A kid asks where the books go and nobody answers correctly.",
+      "Someone steals a book on the last day and calls it love."
     ],
     responses: [
       "They read out loud and pretend it’s just tradition.",
       "They argue politely and smile through it.",
       "They pack the shelves like it’s an apology.",
       "They pretend it’s about budgets, not loss.",
-      "They keep working because stopping would make it real."
+      "They keep working because stopping would make it real.",
+      "They take photos like proof they were here.",
+      "They make a list of what mattered and hate the list.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "The last book is checked out. The lights go off.",
       "The room empties. The silence stays behind.",
       "They lock the doors and don’t look back.",
       "The book drop closes with a soft click.",
-      "A sign goes up. Nobody reads it."
+      "A sign goes up. Nobody reads it.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- SMALLTOWN MISSING ---- */
   {
     tag: "smalltown_missing",
     settingLine: "Small town. A missing person.",
-    titleAdjs: ["SHADOW","BROKEN","WINTER","SECOND","SILENT","LAST","EMPTY"],
-    titleNouns: ["SHADOW ON PINE ROAD","MISSING POSTER","THE JACKET","THE EMPTY FIELD","PINE ROAD","THE PORCH LIGHT","THE OLD HOUSE","THE BACK ROAD"],
+    titleAdjs: ["SHADOW","BROKEN","WINTER","SECOND","SILENT","LAST","EMPTY","FADING","COLD"],
+    titleNouns: ["SHADOW ON PINE ROAD","MISSING POSTER","THE JACKET","THE EMPTY FIELD","PINE ROAD","THE PORCH LIGHT","THE OLD HOUSE","THE BACK ROAD","THE SEARCH","THE PHONE TREE"],
     characters: [
       "A brother searching while everyone else pretends it’s normal.",
       "A local cop who knows too much and says too little.",
       "A family whose grief keeps changing shape.",
       "Two friends arguing over what they saw and when.",
-      "A newcomer who asks questions nobody asked before."
+      "A newcomer who asks questions nobody asked before.",
+      "A classmate who keeps showing up at the wrong time.",
+      "A reporter who wants a story and can’t hide it.",
+      "A parent insisting their child will come back because they have to."
     ],
     problems: [
       "People whisper about what they saw but won’t say it out loud.",
       "A jacket is found and the town stops breathing for a minute.",
       "A rumor becomes evidence without ever becoming true.",
       "The timeline doesn’t add up and nobody admits it matters.",
-      "Someone insists the missing person called, but won’t play the message."
+      "Someone insists the missing person called, but won’t play the message.",
+      "The search turns into a fight over who gets to grieve.",
+      "A neighbour’s porch light keeps turning on at the same hour.",
+      "A community meeting turns cruel without anyone raising their voice."
     ],
     responses: [
       "They search the same places again because it feels like doing something.",
       "They accuse each other indirectly and call it concern.",
       "They keep notes like the truth is a math problem.",
       "They apologize to each other and mean something else.",
-      "They hold a meeting that turns into a fight."
+      "They hold a meeting that turns into a fight.",
+      "They knock on doors like the answers are hiding in curtains.",
+      "They keep replaying the last day and edit it in their minds.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "Nobody admits what they know.",
       "He finds the jacket and nothing else.",
       "The town goes quiet and calls it closure.",
       "A lead appears and dies in the same day.",
-      "They stop searching out loud and keep searching anyway."
+      "They stop searching out loud and keep searching anyway.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- PARK BENCH ---- */
   {
     tag: "park_bench",
     settingLine: "A park bench, revisited over years.",
-    titleAdjs: ["BLUE","QUIET","LAST","EMPTY","AUTUMN","WINTER","SECOND"],
-    titleNouns: ["THE BLUE BENCH","THE LAST BENCH","BENCH IN APRIL","PARK CLOCK","SUNDAY AFTERNOON","THE SAME BENCH","THE PATH","LEAVES"],
+    titleAdjs: ["BLUE","QUIET","LAST","EMPTY","AUTUMN","WINTER","SECOND","FADING","OLD"],
+    titleNouns: ["THE BLUE BENCH","THE LAST BENCH","BENCH IN APRIL","PARK CLOCK","SUNDAY AFTERNOON","THE SAME BENCH","THE PATH","LEAVES","THE RUST","THE POND"],
     characters: [
       "Strangers who sit on the same bench at different stages of their lives.",
       "Two people who keep missing each other by a week.",
       "An elderly regular and a teenager who keeps pretending not to notice them.",
       "A person waiting and a person watching.",
-      "A couple who returns to prove something to themselves."
+      "A couple who returns to prove something to themselves.",
+      "A parent on a break and a child who won’t stop asking why.",
+      "A jogger who slows down and doesn’t know why.",
+      "Someone who sits there every Sunday like it’s an obligation."
     ],
     problems: [
       "Time passes and the bench keeps the receipts.",
       "A familiar stranger finally speaks, and it changes the ritual.",
       "They realize they’ve been rehearsing loneliness.",
       "A small kindness creates a bigger obligation.",
-      "A promise made years ago comes due unexpectedly."
+      "A promise made years ago comes due unexpectedly.",
+      "They realize they only come here when they’re losing.",
+      "The bench is repainted and it feels like a betrayal.",
+      "Someone leaves something behind on purpose."
     ],
     responses: [
       "They talk like it’s casual and remember it all day.",
       "They avoid naming the feeling and let it sit there.",
       "They return again, hoping repetition becomes meaning.",
       "They leave early and pretend it was intentional.",
-      "They share something small and immediately regret the intimacy."
+      "They share something small and immediately regret the intimacy.",
+      "They act like the bench is just a bench and fail.",
+      "They sit too long and call it rest.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "They stand up and don’t look back.",
       "The bench stays. Everything else changes.",
       "They leave something behind on purpose.",
       "A new person sits down and the story resets.",
-      "They stop coming. The bench doesn’t notice."
+      "They stop coming. The bench doesn’t notice.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   },
 
+  /* ---- FESTIVAL ONE ROOM ---- */
   {
     tag: "festival_one_room",
     settingLine: "One room. One camera.",
-    titleAdjs: ["STATIC","SILENT","FADING","BROKEN","QUIET","SECOND","WINTER"],
-    titleNouns: ["MIRROR TALK","ECHO ROOM","UNPUBLISHED","A FILM BY GARY","GARAGE LIGHTS","APARTMENT 3B","VOICE MEMOS","THE EDIT"],
+    titleAdjs: ["STATIC","SILENT","FADING","BROKEN","QUIET","SECOND","WINTER","EMPTY","BLUE"],
+    titleNouns: ["MIRROR TALK","ECHO ROOM","UNPUBLISHED","A FILM BY GARY","GARAGE LIGHTS","APARTMENT 3B","VOICE MEMOS","THE EDIT","THE CUT","THE TAKE"],
     characters: [
       "A man recreates moments from his life using different wigs and voices.",
       "A woman documents herself until the documentation becomes the problem.",
       "A former reporter interviewing people who don’t want to be a story.",
       "A person narrating their own failure with too much precision.",
-      "Someone trying to tell the truth without saying the obvious words."
+      "Someone trying to tell the truth without saying the obvious words.",
+      "An artist who keeps restarting the scene to avoid the ending.",
+      "A person talking to a mirror like it’s a witness.",
+      "Someone who records voice memos to remember things and starts distrusting them."
     ],
     problems: [
       "The recordings start contradicting each other in small ways.",
       "Scenes repeat with changes nobody explains.",
       "They can’t tell which version of themselves is lying.",
       "A memory keeps restarting at the worst moment.",
-      "The story refuses to become a story."
+      "The story refuses to become a story.",
+      "They realize the camera is making them crueler.",
+      "A long silence becomes the main character.",
+      "They try to confess and keep turning it into a joke."
     ],
     responses: [
       "They perform a memory again and again, trying to fix it.",
       "They edit the footage until the truth disappears.",
       "They argue with a recording like it can answer back.",
       "They switch voices until it feels like someone else’s fault.",
-      "They keep filming because stopping would mean it mattered."
+      "They keep filming because stopping would mean it mattered.",
+      "They write lines on paper and forget to say them.",
+      "They record a new version that sounds worse.",
+      pick(SOFT_ACTIONS, null)
     ],
     endings: [
       "They delete it.",
       "The camera keeps rolling.",
       "The lights go out.",
       "They walk away from the frame.",
-      "A hard cut to silence."
+      "A hard cut to silence.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
+    ]
+  },
+
+  /* ---- OUTDOOR MOVIE NIGHT (for irony) ---- */
+  {
+    tag: "outdoor_movie",
+    settingLine: "Outdoor movie night behind a community centre.",
+    titleAdjs: ["SUMMER","LAST","QUIET","APRIL","BLUE","SECOND","FADING","EMPTY","OLD"],
+    titleNouns: ["FOLDING CHAIRS","PROJECTOR HUM","THE WHITE SHEET","COMMUNITY NIGHT","BUGS IN THE LIGHT","OUT OF THE BLUE","SUMMER MAP","LAST STOP SUNDAY","THE SCREEN"],
+    characters: [
+      "Volunteers setting up a screen while pretending they’re not angry.",
+      "A parent trying to keep kids quiet and failing politely.",
+      "Two exes seated too close because the rows are narrow.",
+      "A teenager embarrassed to be there and secretly moved by it.",
+      "A host making announcements nobody listens to.",
+      "A couple in charge of sound who keep arguing in whispers.",
+      "Someone who came alone and someone who notices."
+    ],
+    problems: [
+      "The projector keeps cutting out at the worst moments.",
+      "A sudden wind turns the screen into an accusation.",
+      "Someone recognizes themselves in the film and doesn’t laugh.",
+      "A rumour spreads about why the film was chosen.",
+      "The audience becomes a jury without meaning to."
+    ],
+    responses: [
+      "They clap too hard to prove they’re supportive.",
+      "They pretend it’s fine and keep adjusting the settings.",
+      "They drift into side conversations that turn personal.",
+      "They argue about logistics because the real topic is forbidden.",
+      pick(SOFT_ACTIONS, null),
+      pick(SOFT_ACTIONS, null)
+    ],
+    endings: [
+      "The film ends and nobody knows whether to applaud.",
+      "They pack up in silence like it’s routine.",
+      "A kid falls asleep and that becomes the kindest ending.",
+      pick(QUIET_END_CAPS, null),
+      pick(QUIET_END_CAPS, null)
     ]
   }
 ];
 
-/* Genres: still drama-forward, but the pool is bigger to reduce repetition. */
+/* =========================
+   Genres (expanded)
+========================= */
 const GENRE_POOLS = {
   house: [
     "Drama","Drama","Drama","Drama","Drama",
@@ -634,7 +864,7 @@ const GENRE_POOLS = {
     "Drama / Experimental",
     "Animated / Drama",
     "Drama / Comedy / Experimental",
-    "Action / Drama" // intentionally low-stakes action-adjacent
+    "Action / Drama"
   ],
   festival: [
     "Drama","Drama",
@@ -653,6 +883,13 @@ const GENRE_POOLS = {
     "Animated / Drama","Animated / Drama",
     "Drama / Comedy / Experimental",
     "Drama / Experimental"
+  ],
+  noir: [
+    "Drama / Mystery","Drama / Mystery",
+    "Drama / Thriller","Drama / Thriller",
+    "Action / Drama",
+    "Drama",
+    "Drama / Experimental"
   ]
 };
 
@@ -667,6 +904,7 @@ function ratingFor(genre, tone, rng) {
   const isThriller = genre.includes("Thriller");
   const isExperimental = genre.includes("Experimental");
   const isAction = genre.includes("Action");
+  const isMystery = genre.includes("Mystery");
 
   if (familyBias) {
     if (isThriller) return chance(0.7, rng) ? "PG-13" : "PG";
@@ -674,6 +912,11 @@ function ratingFor(genre, tone, rng) {
     if (isExperimental) return chance(0.75, rng) ? "PG" : "PG-13";
     if (isAction) return "PG-13";
     return chance(0.65, rng) ? "PG" : "G";
+  }
+
+  if (tone === "noir") {
+    if (isThriller) return chance(0.6, rng) ? "R" : "PG-13";
+    if (isMystery) return chance(0.45, rng) ? "R" : "PG-13";
   }
 
   if (isThriller) return chance(0.55, rng) ? "R" : "PG-13";
@@ -694,9 +937,8 @@ function yearFromMode(mode, rng) {
 function runtimeFromGenre(genre, rng) {
   const isExperimental = genre.includes("Experimental");
   const shortish = isExperimental && chance(0.45, rng);
-  if (shortish) return 38 + Math.floor(r(rng) * 20); // 38–57
-  // Slightly vary normal runtimes more
-  return 85 + Math.floor(r(rng) * 22); // 85–106
+  if (shortish) return 38 + Math.floor(r(rng) * 22); // 38–59
+  return 84 + Math.floor(r(rng) * 24); // 84–107
 }
 
 /* =========================
@@ -738,11 +980,13 @@ function tidySentence(s) {
 }
 
 function buildStructuredSynopsis(setting, rng) {
-  // No overlap: each field has a distinct role and is generated from its own pool.
   const chars   = pick(setting.characters, rng);
   const problem = pick(setting.problems, rng);
   const resp    = pick(setting.responses, rng);
-  const end     = pick(setting.endings, rng);
+  let end       = pick(setting.endings, rng);
+
+  // Ensure end isn't literally identical to earlier segments
+  if (end === chars || end === problem || end === resp) end = pick(QUIET_END_CAPS, rng);
 
   return {
     synopsis: [
@@ -759,7 +1003,11 @@ function buildStructuredSynopsis(setting, rng) {
 /* Strong signature: blocks near-duplicates hard */
 function signatureForFilm(f) {
   return [
-    f.title, f.year, f.genre, f.rating, f.runtime,
+    f.title,
+    f.year,
+    f.genre,
+    f.rating,
+    f.runtime,
     f.settingTag,
     f._parts.chars,
     f._parts.problem,
@@ -768,35 +1016,49 @@ function signatureForFilm(f) {
   ].join("|");
 }
 
-/* Choose setting with a tiny genre bias (optional, but helps vibes) */
-function chooseSettingForGenre(genre, tone, rng) {
-  // Festival mode leans more into one-room.
-  if (tone === "festival" && chance(0.35, rng)) {
-    const one = SETTINGS.find(s => s.tag === "festival_one_room");
+/* Choose setting with genre bias + “no-repeat per click” option */
+function chooseSettingForGenre(genre, tone, rng, localSettingUse) {
+  // In a single generate run, try to avoid using the same setting twice until necessary.
+  const unused = SETTINGS.filter(s => !localSettingUse.has(s.tag));
+  const poolBase = unused.length ? unused : SETTINGS;
+
+  // Noir prefers: smalltown_missing, apartment_outage, airport, bus
+  if (tone === "noir" && chance(0.55, rng)) {
+    const noir = poolBase.filter(s => ["smalltown_missing","apartment_outage","airport","bus","festival_one_room"].includes(s.tag));
+    if (noir.length) return pick(noir, rng);
+  }
+
+  // Festival leans one-room
+  if (tone === "festival" && chance(0.40, rng)) {
+    const one = poolBase.find(s => s.tag === "festival_one_room");
     if (one) return one;
   }
-  // Experimental genre: sometimes go one-room even in house.
-  if (genre.includes("Experimental") && chance(0.28, rng)) {
-    const one = SETTINGS.find(s => s.tag === "festival_one_room");
+
+  // Experimental sometimes one-room
+  if (genre.includes("Experimental") && chance(0.30, rng)) {
+    const one = poolBase.find(s => s.tag === "festival_one_room");
     if (one) return one;
   }
-  // Thriller: slightly prefer apartment_outage or smalltown_missing.
-  if (genre.includes("Thriller") && chance(0.35, rng)) {
-    const preferred = SETTINGS.filter(s => ["apartment_outage","smalltown_missing"].includes(s.tag));
+
+  // Thriller prefers apartment/smalltown
+  if (genre.includes("Thriller") && chance(0.38, rng)) {
+    const preferred = poolBase.filter(s => ["apartment_outage","smalltown_missing","airport","bus"].includes(s.tag));
     if (preferred.length) return pick(preferred, rng);
   }
-  // Romance: slightly prefer diner/roadtrip/park_bench/airport.
-  if (genre.includes("Romance") && chance(0.32, rng)) {
-    const preferred = SETTINGS.filter(s => ["diner","roadtrip","park_bench","airport"].includes(s.tag));
+
+  // Romance prefers diner/roadtrip/bench/airport/outdoor
+  if (genre.includes("Romance") && chance(0.34, rng)) {
+    const preferred = poolBase.filter(s => ["diner","roadtrip","park_bench","airport","outdoor_movie"].includes(s.tag));
     if (preferred.length) return pick(preferred, rng);
   }
-  return pick(SETTINGS, rng);
+
+  return pick(poolBase, rng);
 }
 
-function generateUniqueFilm(tone, yearMode, rng, localSeen) {
-  for (let tries = 0; tries < 1800; tries++) {
+function generateUniqueFilm(tone, yearMode, rng, localSeen, localSettingUse) {
+  for (let tries = 0; tries < 2600; tries++) {
     const genre = weightedGenre(tone, rng);
-    const setting = chooseSettingForGenre(genre, tone, rng);
+    const setting = chooseSettingForGenre(genre, tone, rng, localSettingUse);
 
     const title   = makeTitleForSetting(setting, rng);
     const year    = yearFromMode(yearMode, rng);
@@ -818,6 +1080,7 @@ function generateUniqueFilm(tone, yearMode, rng, localSeen) {
 
     localSeen.add(sig);
     seen.add(sig);
+    localSettingUse.add(setting.tag);
     return film;
   }
   return null;
@@ -838,7 +1101,7 @@ const out = document.getElementById("out");
 const btnCopy = document.getElementById("btnCopy");
 
 document.getElementById("btnGen").onclick = () => {
-  const n = clamp(parseInt(document.getElementById("count").value || "5", 10), 1, 50);
+  const n = clamp(parseInt(document.getElementById("count").value || "5", 10), 1, 80);
   const tone = document.getElementById("tone").value;
   const yearMode = document.getElementById("yearMode").value;
 
@@ -849,10 +1112,11 @@ document.getElementById("btnGen").onclick = () => {
   const rng = salted ? mulberry32(hashStringToUint32(salted)) : null;
 
   const localSeen = new Set();
+  const localSettingUse = new Set();
   const films = [];
 
   for (let i = 0; i < n; i++) {
-    const f = generateUniqueFilm(tone, yearMode, rng, localSeen);
+    const f = generateUniqueFilm(tone, yearMode, rng, localSeen, localSettingUse);
     if (!f) break;
     films.push(f);
   }
