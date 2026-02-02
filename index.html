@@ -764,11 +764,15 @@ ${synopsis}
   $out.value = "";
   $note.textContent = "";
 
-  document.getElementById("generate").addEventListener("click", () => {
-    const n = Math.max(1, Math.min(10, parseInt($count.value || "5", 10)));
-    $out.value = generateBatch(n, $era.value, genreBias);
-    $note.textContent = "Generated.";
-  });
+ document.getElementById("generate").addEventListener("click", () => {
+  const n = Math.max(1, Math.min(10, parseInt($count.value || "5", 10)));
+  $out.value = generateBatch(n, $era.value, genreBias);
+  $out.scrollTop = 0;
+  $out.setSelectionRange(0, 0);
+  $out.focus();
+  $note.textContent = "Generated.";
+});
+
 
   document.getElementById("copy").addEventListener("click", async () => {
     try {
