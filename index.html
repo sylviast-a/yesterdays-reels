@@ -283,7 +283,67 @@ const TITLE_NOUNS_BY_SETTING = {
   laundromat: [
     "SPIN CYCLE","CHANGE MACHINE","LOST SOCK","LAST DRYER","SOAP DISPENSER",
     "FOLDING TABLE","CYCLE TIMER","DROP COIN"
-  ]
+  ],
+  school: [
+  "HALL PASS","DETENTION SLIP","LOST PERMISSION FORM","LOCKER 12","QUIET ANNOUNCEMENT",
+  "BELL SCHEDULE","MISSING ASSIGNMENT","PLAY PROGRAM","YEARBOOK PHOTO"
+],
+classroom: [
+  "PARENT NOTE","FOLDING CHAIR","WHITEBOARD MESSAGE","CLASS LIST","STICKER SHEET",
+  "HANDOUT","NAME TAG","GROUP PROJECT"
+],
+parkinggarage: [
+  "LEVEL B2","PARKING TICKET","BROKEN GATE","STAIRWELL LIGHT","PAY STATION",
+  "CCTV MONITOR","ELEVATOR BUTTON"
+],
+motel: [
+  "ROOM KEY","ICE MACHINE","VACANCY SIGN","WAKE-UP CALL","CLEANING CART",
+  "THIN WALL","LATE CHECKOUT"
+],
+grocery: [
+  "AISLE 9","CLOSED REGISTER","SELF-CHECKOUT","OVERDUE COUPON","BROKEN CART",
+  "RED BASKET","PRICE CHECK"
+],
+coffee: [
+  "LAST CUP","TIP JAR","SUGAR PACKET","COLD ESPRESSO","CLOSE SIGN",
+  "BACK TABLE","ORDER NUMBER"
+],
+callcentre: [
+  "HOLD MUSIC","SCRIPT CARD","ESCALATION","MUTE BUTTON","CALL LOG",
+  "QUALITY SCORE","BREAK TIMER"
+],
+communitypool: [
+  "POOL PASS","LOCKER KEY","WET TOWEL","NO DIVING SIGN","LANE LINE",
+  "LIFEGUARD CHAIR","CLOSING WHISTLE"
+],
+funeralhome: [
+  "GUEST BOOK","FLOWER CARD","PROGRAM","OPEN CASKET","VIEWING ROOM",
+  "LAST SONG","EULOGY NOTES"
+],
+courthouse: [
+  "CASE FILE","COURT DATE","HALLWAY BENCH","NUMBER CALLED","AFFIDAVIT",
+  "SECURITY TRAY","VERDICT FORM"
+],
+therapywaiting: [
+  "INTAKE FORM","TISSUE BOX","APPOINTMENT CARD","SOFT CHAIR","CLIPBOARD",
+  "DOOR CHIME","WAITING NUMBER"
+],
+museum: [
+  "DONATION BOX","EXHIBIT CARD","AUDIO GUIDE","CLOSED GALLERY","BROKEN PLAQUE",
+  "GIFT SHOP RECEIPT","QUIET ROOM"
+],
+train: [
+  "PLATFORM 4","DELAY NOTICE","LAST TRAIN","TICKET STUB","TRACK CHANGE",
+  "EMPTY BENCH","ANNOUNCEMENT"
+],
+elevator: [
+  "FLOOR BUTTON","EMERGENCY PHONE","FIRE PANEL","WEIGHT LIMIT","MIRROR",
+  "STUCK DOOR","SERVICE KEY"
+],
+pharmacy: [
+  "PICKUP SLIP","NUMBER CALLED","BOTTLE LABEL","INSURANCE DENIAL","WAIT TIME",
+  "LAST REFILL","CLOSED WINDOW"
+]
 };
 
 // Tails are also setting-specific so you don't get "IN THE PROJECTOR" nonsense.
@@ -299,7 +359,23 @@ const PLACE_TAILS_BY_SETTING = {
   roadtrip: ["THE GAS STATION","THE REST STOP","THE HIGHWAY","THE PARKING SHOULDER"],
   smalltown: ["PINE ROAD","THE PORCH","THE TOWN HALL","THE EMPTY FIELD"],
   onecam: ["THE FRAME","THE EDIT","THE CUT","THE MONITOR"],
-  laundromat: ["THE FOLDING TABLE","THE CHANGE MACHINE","THE EXIT","THE BACK WALL"]
+  laundromat: ["THE FOLDING TABLE","THE CHANGE MACHINE","THE EXIT","THE BACK WALL"],
+  school: ["THE HALLWAY","THE GYM","THE OFFICE","THE LOCKERS","THE PARKING LOT"],
+  classroom: ["THE WHITEBOARD","THE BACK ROW","THE DOORWAY","THE DESK","THE HALL"],
+  parkinggarage: ["LEVEL B2","THE STAIRWELL","THE PAY STATION","THE EXIT GATE","THE ELEVATOR"],
+  motel: ["THE ICE MACHINE","THE HALLWAY","THE PARKING LOT","THE FRONT DESK","ROOM 12"],
+  grocery: ["AISLE 9","THE CHECKOUT","THE FREEZER SECTION","THE EXIT","THE BACK ROOM"],
+  coffee: ["THE BACK TABLE","THE COUNTER","THE BATHROOM DOOR","THE PATIO","THE CLOSE SIGN"],
+  callcentre: ["THE BREAK ROOM","THE FLOOR","THE SUPERVISOR'S DESK","THE HEADSET RACK","THE LATE SHIFT"],
+  communitypool: ["THE LOCKERS","THE DEEP END","THE LIFEGUARD CHAIR","LANE 3","THE SHOWERS"],
+  funeralhome: ["THE VIEWING ROOM","THE HALLWAY","THE PARKING LOT","THE FRONT STEPS","THE OFFICE"],
+  courthouse: ["THE HALLWAY","THE SECURITY LINE","THE BENCH","COURTROOM 2","THE STAIRS"],
+  therapywaiting: ["THE WAITING ROOM","THE DOOR","THE SOFT CHAIR","THE HALLWAY","THE CLIPBOARD"],
+  museum: ["THE QUIET ROOM","THE GALLERY","THE GIFT SHOP","THE EXIT","THE BENCH"],
+  train: ["PLATFORM 4","THE TRACKS","THE BENCH","THE STAIRS","THE ANNOUNCEMENT BOARD"],
+  elevator: ["BETWEEN FLOORS","THE MIRROR","THE PANEL","THE DOOR","THE EMERGENCY PHONE"],
+  pharmacy: ["THE COUNTER","THE LINE","THE PICKUP WINDOW","THE WAITING CHAIRS","THE EXIT"]
+
 };
 
 const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
@@ -374,7 +450,23 @@ function makeTitle(settingKey){
     { key:"roadtrip", line:"Long drive home." },
     { key:"smalltown", line:"Small town in early spring." },
     { key:"onecam", line:"One room. One camera." },
-    { key:"laundromat", line:"Late-night laundromat." }
+    { key:"laundromat", line:"Late-night laundromat." },
+    { key:"school", line:"School after hours." },
+    { key:"classroom", line:"Classroom during parent night." },
+    { key:"parkinggarage", line:"Parking garage at closing time." },
+    { key:"motel", line:"Roadside motel. Thin walls." },
+    { key:"grocery", line:"Grocery store just before closing." },
+    { key:"coffee", line:"Coffee shop near closing." },
+    { key:"callcentre", line:"Call centre on a late shift." },
+    { key:"communitypool", line:"Community pool during adult swim." },
+    { key:"funeralhome", line:"Funeral home on a weekday afternoon." },
+    { key:"courthouse", line:"Courthouse hallway." },
+    { key:"therapywaiting", line:"Therapist waiting room." },
+    { key:"museum", line:"Small museum on a slow day." },
+    { key:"train", line:"Late train platform." },
+    { key:"elevator", line:"Elevator stuck between floors." },
+    { key:"pharmacy", line:"Pharmacy line near closing." }
+
   ];
 
   const CHARACTERS = {
@@ -405,7 +497,8 @@ function makeTitle(settingKey){
       "Two ex-friends trapped in the same aisle at the wrong time",
       "A parent and child arguing quietly over what to keep",
       "A staff member who keeps straightening the same display",
-      "A regular who knows the owner’s story too well"
+      "A regular who knows the owner’s story too well",
+      "Two people who recognise each other but cannot place where from"
     ],
     bus: [
       "A person with a suitcase and a person with nothing at all",
@@ -414,7 +507,7 @@ function makeTitle(settingKey){
       "Two strangers sitting too close because the bus is empty",
       "A regular rider noticing a new face and regretting it",
       "Teen waits for bus after school every day",
-      "Church bus breaks down",
+      "The bus breaks down and no one knows how to fix it",
       "Young woman takes solo bus trip across state"
     ],
     hospital: [
@@ -422,7 +515,8 @@ function makeTitle(settingKey){
       "A paramedic dropping off a patient they cannot forget",
       "Coworkers flirt to distract themselves from the obvious",
       "A nurse and a doctor who never finishes a sentence",
-      "A family asking for reassurance nobody can give"
+      "A family asking for reassurance nobody can give",
+      "Two people who came for different reasons and discover it too late"
     ],
     apartment: [
       "Neighbours who have lived beside each other for years and never spoken",
@@ -472,8 +566,123 @@ function makeTitle(settingKey){
       "Two people folding clothes like they are handling evidence",
       "A parent washing one small load and pretending it is enough",
       "A teenager killing time and an older stranger who will not stop talking",
-      "Someone waiting for a cycle to finish and someone waiting for a life to change"
-    ]
+      "Someone waiting for a cycle to finish and someone waiting for a life to change",
+      "Someone rewashing something clean because it feels safer than leaving",
+      "A person reading a detergent label like it’s a confession"
+    ],
+    school: [
+  "A parent waiting in the office and a secretary who has seen everything",
+  "A substitute teacher locking up and a student who came back for something",
+  "Two parents who recognise each other from years ago and pretend they don’t",
+  "A custodian finishing rounds and a coach who cannot stop talking",
+  "A kid waiting for a ride and an adult who should not still be here"
+],
+classroom: [
+  "A teacher doing their best voice and a parent who refuses to be charmed",
+  "Two parents stuck beside each other in tiny chairs",
+  "A student showing a project with too much intensity",
+  "A teacher’s aide holding the clipboard like a shield",
+  "A parent trying to look normal and failing politely",
+  "Someone watching the room instead of participating"
+],
+parkinggarage: [
+  "A person who lost their car and a security guard who has heard it all",
+  "Two strangers walking to the same level and not admitting they are nervous",
+  "A driver with a dead battery and someone who offers help too quickly",
+  "A night worker finishing a shift and a customer who cannot find the exit",
+  "Someone waiting by the pay station and someone counting coins like confession"
+],
+motel: [
+  "A front-desk clerk pretending not to listen and a guest who needs to talk",
+  "Two strangers in adjacent rooms sharing a wall they wish didn’t exist",
+  "A traveller checking in late and a clerk with a sympathetic face",
+  "A family pretending it’s a vacation and failing",
+  "A guest who won’t sleep and a guest who sleeps too much"
+],
+grocery: [
+  "A cashier who wants to go home and a customer who keeps adding items",
+  "Two strangers reaching for the same product and making it weird",
+  "A parent doing one small shop and pretending it is enough",
+  "A stocker moving too fast and someone moving too slow",
+  "A customer arguing about a price like it matters more than it does"
+],
+coffee: [
+  "A barista cleaning the espresso machine and a customer lingering on purpose",
+  "Two regulars who only speak when the shop is empty",
+  "A person waiting for a text and a person pretending not to wait",
+  "A student rewriting the same sentence and a stranger watching kindly",
+  "A customer asking for a refill and acting like it is not emotional"
+],
+callcentre: [
+  "A new hire clinging to the script and a veteran who has stopped believing it",
+  "A supervisor doing calm voice and an agent barely holding it together",
+  "Two agents sharing a headset because theirs broke",
+  "A caller on hold and an employee listening to the hold music like a verdict",
+  "A worker counting down minutes and pretending it is fine",
+  "A person who arrived early and someone who is already late"
+],
+communitypool: [
+  "A lifeguard who has memorised the rules and a swimmer who treats them like insults",
+  "Two adults swimming laps and refusing to acknowledge each other’s sadness",
+  "A parent waiting on the bleachers and a kid who won’t stop asking why",
+  "A staff member closing the doors and a patron who keeps stalling",
+  "A swimmer drying off too slowly to avoid going home"
+],
+funeralhome: [
+  "Two relatives who keep offering help that feels like control",
+  "A stranger who knew the deceased differently than everyone expected",
+  "A funeral director doing gentle voice and a family member who hates it",
+  "A friend who arrived late and a friend who won’t forgive them",
+  "A person reading the guest book like it is evidence",
+  "A stranger who asks one question too many"
+],
+courthouse: [
+  "Two people waiting for their names to be called and pretending it isn’t personal",
+  "A witness rehearsing their story and a stranger who can tell",
+  "A security guard watching a family fall apart politely",
+  "An attorney with a calm face and a client with shaking hands",
+  "Two strangers sharing a bench and not looking at each other",
+  "Someone pretending to be in charge and someone quietly letting them"
+],
+therapywaiting: [
+  "Two clients sharing the same waiting room and pretending they are not listening",
+  "A person filling out intake forms like they are lying",
+  "A receptionist offering water and someone refusing it on principle",
+  "A client arriving early and a client arriving late and both feeling judged",
+  "Someone staring at the tissue box like it is a threat",
+  "A person who should leave and doesn’t",
+  "A person who keeps apologising and a person who never does"
+],
+museum: [
+  "A docent on a slow day and a visitor who keeps circling the same exhibit",
+  "Two strangers whispering too loudly in a quiet gallery",
+  "A parent trying to teach meaning and a kid refusing it",
+  "A security guard watching people feel things and pretending not to",
+  "A visitor reading every plaque like it might fix something",
+  "A person carrying something fragile and acting like it isn’t"
+],
+train: [
+  "Two commuters sharing a bench and refusing to make eye contact",
+  "A traveller with a suitcase and a station worker who looks exhausted",
+  "A teenager pretending they are not lost",
+  "A parent and child waiting for the last train",
+  "A stranger offering directions with too much confidence"
+],
+elevator: [
+  "Two strangers trapped together and negotiating politeness minute by minute",
+  "A person who hits the emergency button too fast and someone who judges them",
+  "A couple who were already fighting before the doors stuck",
+  "A worker carrying a box and a neighbour carrying nothing",
+  "Someone staring at the floor numbers like they are a countdown",
+  "Two people stuck beside each other for practical reasons"
+],
+pharmacy: [
+  "A pharmacist doing calm voice and a customer trying not to cry",
+  "Two people waiting for refills and pretending it isn’t about aging",
+  "A parent picking up antibiotics and looking guilty",
+  "A customer arguing with insurance on speakerphone",
+  "A person counting pills in their head like prayer"
+]
   };
 
   const PROBLEMS = {
@@ -482,7 +691,8 @@ function makeTitle(settingKey){
       "They hear their name over the intercom and it is not good news",
       "A delay stretches long enough for real feelings to show up",
       "A voicemail arrives that changes the destination",
-      "Someone else recognizes them first"
+      "Someone else recognizes them first",
+      "A delay lasts so long it feels intentional"
     ],
     diner: [
       "They promised themselves they would not talk tonight",
@@ -518,7 +728,8 @@ function makeTitle(settingKey){
       "An empty bed becomes a question nobody answers",
       "They realize they have been working around a lie",
       "A chart goes missing and the room becomes suspicious",
-      "A patient says something kind and everyone panics a little"
+      "A patient says something kind and everyone panics a little",
+      "Someone realizes they misunderstood the situation entirely"
     ],
     apartment: [
       "A noise in the hallway becomes a collective obsession",
@@ -563,7 +774,119 @@ function makeTitle(settingKey){
       "A note is taped to a machine and nobody admits they wrote it",
       "A spill happens and everyone overreacts politely",
       "The TV plays an old commercial that hits too hard"
-    ]
+    ],
+    school: [
+  "A permission form is missing and it becomes a referendum on parenting",
+  "A bell rings unexpectedly and nobody knows why",
+  "A rumour spreads about a teacher and no one says it directly",
+  "A child’s backpack is left behind and it feels symbolic",
+  "Someone sees a name on a list that should not be there",
+  "A decision is made without discussion"
+],
+classroom: [
+  "A parent night meeting becomes a quiet interrogation",
+  "A student says something honest and the room freezes",
+  "A teacher praises the wrong thing and it lands badly",
+  "A seating chart forces two people too close",
+  "A project falls apart and everyone pretends it’s fine",
+  "A detail is remembered incorrectly and no one corrects it"
+],
+parkinggarage: [
+  "The payment machine refuses a card and it feels personal",
+  "A stairwell light keeps turning off at the wrong time",
+  "A car alarm starts and no one claims it",
+  "Someone realises they are walking behind the same person too long",
+  "The exit gate won’t lift and patience becomes a moral test"
+],
+motel: [
+  "A wake-up call comes to the wrong room and it changes the night",
+  "Thin walls turn someone else’s life into a soundtrack",
+  "A missing key card becomes an accusation",
+  "A knock at the door happens once and no one answers",
+  "A family next door fights quietly and everyone hears it"
+],
+grocery: [
+  "A coupon won’t scan and it becomes about respect",
+  "A child asks for something and the parent cannot afford to say yes",
+  "The store announces closing and no one moves",
+  "Someone sees someone they hoped they’d never see again",
+  "A small apology is demanded over nothing and it becomes everything"
+],
+coffee: [
+  "The close sign flips and someone stays seated anyway",
+  "A drink is made wrong and the complaint is not about the drink",
+  "Two people recognise each other and pretend they don’t",
+  "A text arrives that changes the mood of the room",
+  "Silence stretches long enough to become a decision"
+],
+callcentre: [
+  "A call escalates and the script stops working",
+  "Hold music plays too long and it becomes a private torture",
+  "A quality review is announced and everyone starts behaving differently",
+  "A caller says something kind and nobody knows what to do with it",
+  "A mute button fails at the worst time"
+],
+communitypool: [
+  "A rule is enforced and it becomes about control",
+  "Someone slips and laughs, and then regrets it",
+  "The closing whistle blows and no one wants to leave",
+  "A child asks a question that lands like a verdict",
+  "A lane is taken and it becomes a territorial dispute"
+],
+funeralhome: [
+  "A photo is placed wrong and it becomes a fight",
+  "Someone speaks the truth at the wrong time",
+  "A song is requested and nobody can agree",
+  "A guest book entry reveals something nobody knew",
+  "A late arrival changes the mood",
+  "A promise is implied and later denied"
+],
+courthouse: [
+  "A number is called and the wrong person stands",
+  "Someone’s story changes in one small detail and everyone notices",
+  "A security tray holds something that should not be there",
+  "A hallway conversation becomes evidence",
+  "A verdict is delayed and the waiting becomes the point",
+  "A message arrives that feels like it was meant for someone else"
+],
+therapywaiting: [
+  "A door opens and the wrong name is called",
+  "An intake form asks a question that feels like an accusation",
+  "Someone is late and it turns into shame",
+  "A noise in the hallway makes everyone listen",
+  "A polite greeting is offered and refused",
+  "A choice is offered that does not feel like a choice"
+],
+museum: [
+  "An exhibit label is wrong and it annoys someone too much",
+  "A child touches something and a parent panics",
+  "A donation box is empty and someone takes it personally",
+  "A quiet room becomes not quiet",
+  "A visitor stays at one piece too long and it looks suspicious"
+],
+train: [
+  "A delay stretches long enough for real feelings to show up",
+  "A track change is announced and no one hears it correctly",
+  "The last train becomes a deadline nobody admits",
+  "A ticket won’t scan and it becomes a public shame",
+  "Someone sits down and the bench suddenly feels claimed",
+  "A route changes and nobody explains why"
+],
+elevator: [
+  "The elevator stops between floors and no one agrees on what to do",
+  "The emergency phone rings and no one answers",
+  "Someone jokes too early and it lands badly",
+  "A weak signal turns a text into a lifeline",
+  "The doors open slightly and then close again"
+],
+pharmacy: [
+  "Insurance refuses the claim and it becomes humiliating",
+  "A name is called twice and the person doesn’t move",
+  "A medication is out of stock and nobody apologises correctly",
+  "A customer overhears something they shouldn’t",
+  "A wait time becomes a quiet endurance test",
+  "Someone overhears something they were not supposed to"
+]
   };
 
   const ACTIONS = {
@@ -572,7 +895,8 @@ function makeTitle(settingKey){
       "They decide not to call anyone back",
       "They walk the terminal in slow circles like it is exercise",
       "They trade practical help because feelings are harder",
-      "They make small talk until it becomes too personal"
+      "They make small talk until it becomes too personal",
+      "They sit facing the gate they won’t board and call it planning"
     ],
     diner: [
       "They stop speaking and let the coffee go cold",
@@ -636,7 +960,8 @@ function makeTitle(settingKey){
       "They pretend coincidence is comfort",
       "They hold a meeting that turns into a fight",
       "They circle the same block like it will change",
-      "They talk about mistakes and what went wrong"
+      "They talk about mistakes and what went wrong",
+      "They keep the conversation polite and the feelings hidden"
     ],
     onecam: [
       "They edit the footage until the truth disappears",
@@ -651,7 +976,120 @@ function makeTitle(settingKey){
       "They exchange small favours and call it community",
       "They count minutes like it is a plan",
       "They stare at spinning clothes like it is hypnosis"
-    ]
+    ],
+    school: [
+  "They stop asking questions and call it maturity",
+  "They smile too hard and call it professionalism",
+  "They talk about schedules because feelings are harder",
+  "They agree to follow up and neither believes it",
+  "They stand in the hallway like they are waiting for permission"
+],
+classroom: [
+  "They clap politely and resent themselves for it",
+  "They nod like they understand and don’t",
+  "They make a plan that is really just avoidance",
+  "They take notes like it will keep them safe",
+  "They speak in careful voices and still sound sharp",
+  "They repeat themselves and call it clarity"
+],
+parkinggarage: [
+  "They pretend the echo doesn’t make them uneasy",
+  "They walk slower to avoid arriving first",
+  "They offer help and regret the tone",
+  "They keep pressing the button like insistence will work",
+  "They rehearse what they will say and then don’t"
+],
+motel: [
+  "They listen through the wall and hate themselves for it",
+  "They keep the TV on as moral cover",
+  "They ask for an extra key and pretend it’s practical",
+  "They sit on the edge of the bed like it’s a decision",
+  "They stare at the door chain like it is a promise"
+],
+grocery: [
+  "They read labels like it’s a philosophy",
+  "They add one more item and call it necessary",
+  "They pretend the total is fine and then put something back",
+  "They apologise for existing in the aisle",
+  "They avoid eye contact at the checkout like it’s a rule"
+],
+coffee: [
+  "They ask for a refill and act like it isn’t emotional",
+  "They stir their drink long after it dissolves",
+  "They take the cup to go and keep sitting",
+  "They promise to text and both know they won’t",
+  "They clean the table even though it isn’t theirs",
+  "They sit in silence and let it feel like progress"
+],
+callcentre: [
+  "They keep reading the script even when it stops making sense",
+  "They mute themselves and breathe like it’s a skill",
+  "They apologise for the system as if they built it",
+  "They pass the call and feel guilty",
+  "They take a break and stand there doing nothing",
+  "They agree too quickly and regret the speed"
+],
+communitypool: [
+  "They dry off too slowly to avoid going home",
+  "They enforce a rule and hate how good it feels",
+  "They float on their back and pretend it’s peace",
+  "They count laps like penance",
+  "They laugh once and regret it"
+],
+funeralhome: [
+  "They rearrange flowers like it will fix anything",
+  "They speak in euphemisms until someone can’t anymore",
+  "They offer food because it’s safer than comfort",
+  "They read the guest book twice",
+  "They hug someone they don’t trust",
+  "They speak carefully and still cause damage"
+],
+courthouse: [
+  "They practise their face in the reflection of a glass door",
+  "They talk about weather like it’s evidence",
+  "They sit on the bench like it’s a sentence",
+  "They keep checking the clock and call it patience",
+  "They stop speaking when someone walks by",
+  "They take notes they will never read"
+],
+therapywaiting: [
+  "They fill out the form like they’re negotiating with it",
+  "They stare at the tissue box and refuse to touch it",
+  "They rehearse honesty and choose something smaller",
+  "They try to look calm and fail",
+  "They scroll their phone as camouflage",
+  "They keep checking the clock like it is advice"
+],
+museum: [
+  "They whisper like rules are moral",
+  "They read every plaque like it might fix something",
+  "They circle back to the same room without admitting it",
+  "They pretend they’re bored and keep looking",
+  "They take a photo and then delete it"
+],
+train: [
+  "They keep checking the board like it will start telling the truth",
+  "They make small talk until it becomes too personal",
+  "They stand too close to the edge and then step back",
+  "They let someone go ahead and call it kindness",
+  "They sit down and immediately stand again",
+  "They pretend it is about logistics"
+],
+elevator: [
+  "They make jokes that don’t land and keep going anyway",
+  "They press buttons like insistence is a plan",
+  "They avoid looking in the mirror",
+  "They stand too far apart for the size of the box",
+  "They offer to call someone and hope the other says no"
+],
+pharmacy: [
+  "They repeat their birthday like it’s confession",
+  "They read the label three times and still feel wrong",
+  "They pretend they’re not listening to other people’s names",
+  "They stand in line like it’s punishment",
+  "They say thank you too quietly",
+  "They offer help that makes things worse"
+]
   };
 
   const ENDS = {
@@ -726,7 +1164,7 @@ function makeTitle(settingKey){
       "They stop asking questions and call it maturity",
       "They leave again without closure",
       "The porch light turns on anyway",
-      "Learn about letting go",
+      "They learn about letting go",
       "Someone prepares to move away",
       "Lives quietly intersect"
     ],
@@ -735,15 +1173,128 @@ function makeTitle(settingKey){
       "They walk away from the frame",
       "They delete it",
       "The lights go out",
-      "They save the file under a different name and pretend that helps"
+      "They save the file under a different name and pretend that helps",
+      "They stare into the camera as it fades to black",
+      "They slowly walk away from the camera"
     ],
     laundromat: [
       "They take their laundry and still feel unfinished",
       "The last dryer stops and the silence feels personal",
       "They leave one item behind on purpose",
       "Nothing changes. Something does",
-      "They walk out into the night and feel watched by streetlights"
-    ]
+      "They walk out into the night and feel watched by streetlights",
+      "They throw out their mismatched socks and leave"
+    ],
+    school: [
+  "They leave the building and realise they forgot why they came",
+  "They agree to follow up and both know they won’t",
+  "The lights shut off in sections like a slow eviction",
+  "They walk to the parking lot and do not talk",
+  "A bell rings once and no one explains it"
+],
+classroom: [
+  "The chairs scrape the floor and it sounds like judgement",
+  "A child waves and the adult can’t wave back properly",
+  "They go home and say it went fine",
+  "Nothing resolves. Everyone pretends it did",
+  "They keep the handout and never read it"
+],
+parkinggarage: [
+  "The gate lifts and nobody feels better",
+  "They find the car and it still feels wrong",
+  "They reach the exit and stop for no reason",
+  "The echo follows them outside",
+  "They drive away without turning the radio on"
+],
+motel: [
+  "They fall asleep and wake up guilty",
+  "Morning arrives like an accusation",
+  "They check out late and call it a mistake",
+  "They leave the key behind on purpose",
+  "They get in the car and do not feel relieved",
+  "The room empties but the feeling stays"
+],
+grocery: [
+  "They leave with less than they meant to buy",
+  "They pay and feel nothing",
+  "A receipt prints and it feels like a judgement",
+  "They forget one item and it becomes symbolic",
+  "The doors lock behind them too fast"
+],
+coffee: [
+  "The close sign stays flipped and nobody moves",
+  "They carry the cup outside and still don’t leave",
+  "They promise to text and both know they won’t",
+  "They throw the cup away and keep the feeling",
+  "They walk away without finishing the sentence"
+],
+callcentre: [
+  "The shift ends and their body doesn’t believe it",
+  "Hold music keeps playing in their head",
+  "They log out and immediately feel lonely",
+  "They say good night and nobody answers",
+  "A kind caller becomes the worst memory",
+  "Someone leaves early and no one comments",
+  "They promise to follow up and do not"
+],
+communitypool: [
+  "The closing whistle blows and it feels personal",
+  "They go home with wet hair and a dry mood",
+  "They promise to come back and don’t",
+  "The water still smells like chlorine on their hands",
+  "They leave slowly and call it normal"
+],
+funeralhome: [
+  "They say goodbye and it feels incorrect",
+  "They leave with a program folded too carefully",
+  "They offer one last hug and regret it",
+  "Someone cries and everyone pretends not to notice",
+  "They go home and keep the funeral voice on",
+  "They say goodbye and it feels unnecessary"
+],
+courthouse: [
+  "A door opens and the wrong story wins",
+  "The verdict arrives like weather",
+  "They stand up and their legs don’t agree",
+  "They leave without looking at each other",
+  "Nothing changes.",
+  "They decide not to mention it again"
+],
+therapywaiting: [
+  "Their name is called and they still don’t stand right away",
+  "They walk in and immediately forget what they planned to say",
+  "The door closes softly and it feels final",
+  "They reschedule and call it self-care",
+  "They leave and feel watched by fluorescent lights"
+],
+museum: [
+  "They exit through the gift shop and buy nothing",
+  "They keep thinking about one piece and hate that",
+  "They leave quietly and feel too loud outside",
+  "A brochure crinkles in their pocket like proof",
+  "They go back to the same room one last time"
+],
+train: [
+  "The train arrives and nobody looks grateful",
+  "They board and don’t sit down",
+  "Someone gets on and someone gets off and it feels like a decision",
+  "They miss it and pretend they meant to",
+  "They walk home and call it exercise"
+],
+elevator: [
+  "The doors open and nobody moves at first",
+  "It starts again like nothing happened",
+  "They step out and avoid each other",
+  "Someone laughs and then regrets it",
+  "They take the stairs next time forever"
+],
+pharmacy: [
+  "They leave with the bag and still feel untreated",
+  "They read the label in the car and feel worse",
+  "They thank the pharmacist too late",
+  "They forget the receipt and call it progress",
+  "They go home and don’t take it right away"
+]
   };
 
   function pickYear(bias){
