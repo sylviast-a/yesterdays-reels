@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Yesterday's Reels — Catalogue Generator</title>
+  <title>Yesterday's Reels — Catalogue</title>
   <style>
     :root{
       --bg:#0b0c0f;
@@ -17,10 +17,7 @@
       --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     *{box-sizing:border-box}
-
-    /* Kill accidental horizontal scrollbars */
     html, body { width:100%; overflow-x:hidden; }
-
     body{
       margin:0;
       font-family:var(--sans);
@@ -58,7 +55,7 @@
       border-radius:14px;
       padding:14px;
       box-shadow: 0 12px 30px rgba(0,0,0,.30);
-      min-width:0; /* prevent grid overflow */
+      min-width:0;
     }
     .card h2{margin:0 0 10px; font-size:14px; letter-spacing:.2px;}
 
@@ -74,7 +71,6 @@
       outline:none;
     }
 
-    /* Genre “menu” */
     .genre-menu{
       display:flex;
       gap:8px;
@@ -136,8 +132,8 @@
       font-size:12.5px;
       line-height:1.45;
       outline:none;
-      white-space:pre-wrap;   /* no horizontal scroll inside output */
-      word-break:break-word;  /* just in case */
+      white-space:pre-wrap;
+      word-break:break-word;
       overflow-wrap:anywhere;
     }
     .note{
@@ -153,7 +149,7 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Yesterday's Reels — Catalogue Generator</h1>
+      <h1>Yesterday's Reels — Catalogue</h1>
       <div class="company">
         <p>Yesterday's Reels is a boutique film licensing company that specializes in curating and distributing the best of overlooked cinema. We believe that every film deserves an audience, regardless of budget, release history, or critical reception.</p>
         <p>We have the best collection of forgotten indie dramas, festival films that never received proper distribution, and exclusive DVD titles from the 90s and early 2000s. We hold the exclusive public screening rights to over 50 titles, available for community events, festivals, private organizations, retro cinemas, or outdoor movie nights.</p>
@@ -169,9 +165,9 @@
 
       <label>Genre bias</label>
       <div class="genre-menu" role="group" aria-label="Genre bias">
-        <div class="chip" id="chip-drama" aria-pressed="true" tabindex="0">Drama-heavy (on brand)</div>
-        <div class="chip" id="chip-mix" aria-pressed="false" tabindex="0">More variety</div>
-        <div class="chip" id="chip-experimental" aria-pressed="false" tabindex="0">More experimental</div>
+        <div class="chip" id="chip-drama" aria-pressed="true" tabindex="0">Institutional Sadness</div>
+        <div class="chip" id="chip-mix" aria-pressed="false" tabindex="0">Respectable Variety</div>
+        <div class="chip" id="chip-experimental" aria-pressed="false" tabindex="0">Artsy & Unresolved</div>
       </div>
 
       <div class="row">
@@ -195,7 +191,7 @@
 
     <section class="card">
       <h2>Output</h2>
-      <textarea id="out" spellcheck="false"></textarea>
+      <textarea id="out" spellcheck="false" placeholder="(No catalogue generated yet.)"></textarea>
     </section>
   </div>
 
@@ -213,18 +209,14 @@
   function dedupeWordRuns(s){
     return s.replace(/\b(\w+)(\s+\1\b)+/gi, "$1");
   }
-  function stripLeadingArticle(s){
-    return String(s).trim().replace(/^(THE|A|AN)\s+/i, "").trim();
-  }
   function upperTitleCase(s){
     return String(s).replace(/\s+/g," ").trim().toUpperCase();
   }
 
-  // ===== Title grammar rules =====
+  // ===== Time tokens =====
   const TIME_AT = new Set(["MIDNIGHT","DAWN","DUSK","SUNRISE","SUNSET","NIGHT"]);
   const TIME_IN = new Set(["APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER","WINTER","SPRING","SUMMER","AUTUMN"]);
   const TIME_ON = new Set(["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"]);
-
   function isTimeToken(t){
     const x = String(t).toUpperCase();
     return TIME_AT.has(x) || TIME_IN.has(x) || TIME_ON.has(x);
@@ -235,29 +227,59 @@
     if (TIME_ON.has(x)) return "ON";
     return "IN";
   }
-  function buildTitle(base, tail){
-    const b = stripLeadingArticle(base);
-    const t = stripLeadingArticle(tail);
-    let title;
 
-    if (isTimeToken(t)) {
-      title = `THE ${b} ${timePrep(t)} ${t}`;
-    } else {
-      const preps = ["IN","AT","UNDER","BEHIND","NEAR","OUTSIDE"];
-      const prep = pick(preps);
-      title = `THE ${b} ${prep} THE ${t}`;
+  // ===== Title builder (less nonsense) =====
+  const TITLE_MODIFIERS = [
+    "THE LAST","THE QUIET","THE EMPTY","THE BLUE","THE BROKEN","THE FADING","THE SECOND",
+    "THE SOFT","THE COLD","THE SILENT","THE OPEN","THE CLOSED","THE FINAL","THE THIN"
+  ];
+  const TITLE_NOUNS = [
+    "BENCH","RECEIPT","LETTER","JACKET","POSTER","CLOCK","MAP","SIGNAL","WINDOW",
+    "RETURN DATE","GATE","HALLWAY","STAIRWELL","FIRE ESCAPE","BOOK DROP","AISLE",
+    "SHELF","VENDING MACHINE","PROJECTOR HUM","WHITE SHEET","BACK FIELD","PORCH LIGHT",
+    "MILE MARKER","TURNAROUND","WAITING ROOM","IV DRIP","PINE ROAD","EMPTY FIELD"
+  ];
+
+  // These are *locations* that can sensibly follow a preposition.
+  const PLACE_TAILS = [
+    "THE FIRE ESCAPE","THE STAIRWELL","THE HALLWAY","THE BACK FIELD","THE COMMUNITY CENTRE",
+    "THE PARKING LOT","THE LAST STOP","THE RETURN DESK","THE BOOK DROP","THE STACKS",
+    "THE EMPTY AISLE","THE BACK OFFICE","THE GAS STATION","THE REST STOP","THE HIGHWAY",
+    "THE TERMINAL","GATE 12","THE DEPARTURES BOARD","THE LOBBY","PINE ROAD","THE PORCH"
+  ];
+
+  const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
+
+  function makeTitle(){
+    const mod = pick(TITLE_MODIFIERS);
+    const noun = pick(TITLE_NOUNS);
+
+    // Core title
+    let title = `${mod} ${noun}`;
+
+    // Optional tail (time or place)
+    if (chance(0.62)){
+      if (chance(0.42)){
+        const t = pick(TIME_TAILS);
+        title = `${title} ${timePrep(t)} ${t}`;
+      } else {
+        const prep = pick(["IN","AT","BEHIND","NEAR","UNDER","OUTSIDE"]);
+        const place = pick(PLACE_TAILS);
+        // avoid "IN GATE 12" (prefer AT)
+        let p = prep;
+        if (place === "GATE 12" && prep === "IN") p = "AT";
+        title = `${title} ${p} ${place}`;
+      }
     }
 
     title = dedupeWordRuns(title)
       .replace(/\bTHE\s+THE\b/gi, "THE")
-      .replace(/\bIN\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
-      .replace(/\bON\s+MIDNIGHT\b/gi, "AT MIDNIGHT")
-      .replace(/\bON\s+APRIL\b/gi, "IN APRIL");
+      .replace(/\bIN\s+GATE 12\b/gi, "AT GATE 12");
 
     return upperTitleCase(title);
   }
 
-  // ===== Genre sets =====
+  // ===== Genres =====
   const GENRES = {
     drama: [
       "Drama","Drama","Drama","Drama",
@@ -281,19 +303,20 @@
   const RATINGS = ["G","PG","PG-13","R"];
   const RATINGS_EXP = ["PG","PG-13","PG-13","R","NR"];
 
+  // ===== Settings / story parts =====
   const SETTINGS = [
-    { key:"airport", line:"Airport after midnight.", tails:["AIRPORT","TERMINAL","GATE 12","DEPARTURES BOARD","BAGGAGE CLAIM","SECURITY LINE"] },
-    { key:"diner", line:"Diner after midnight.", tails:["DINER","COUNTER","BOOTH","COFFEE POT","BACK ROOM","PARKING LOT"] },
-    { key:"library", line:"Town library closing.", tails:["LIBRARY","RETURN DESK","STACKS","BASEMENT ARCHIVE","LAST DAY","BOOK DROP"] },
-    { key:"bookstore", line:"Used bookstore closing.", tails:["BOOKSTORE","SHELVES","EMPTY AISLE","RECEIPT BOX","BACK OFFICE","WINDOW DISPLAY"] },
-    { key:"bus", line:"City bus route at night.", tails:["LAST STOP","TURNAROUND","BUS","SEAT 3B","TRANSFER","SHELTER"] },
-    { key:"hospital", line:"Hospital night shift.", tails:["NIGHT SHIFT","WAITING ROOM","HALLWAY","IV DRIP","SUPPLY CLOSET","ELEVATOR"] },
-    { key:"apartment", line:"Apartment building during a power outage.", tails:["STAIRWELL","HALLWAY","LOCKED DOOR","FIRE ESCAPE","UNIT 3B","LAUNDRY ROOM"] },
-    { key:"outdoor", line:"Outdoor movie night behind a community centre.", tails:["COMMUNITY CENTRE","WHITE SHEET","PROJECTOR","FOLDING CHAIRS","PARKING LOT","BACK FIELD"] },
-    { key:"roadtrip", line:"Long drive home.", tails:["HIGHWAY","GAS STATION","REST STOP","GLOVE COMPARTMENT","BACK SEAT","MILE MARKER"] },
-    { key:"smalltown", line:"Small town in early spring.", tails:["PORCH LIGHT","MAIN STREET","POST OFFICE","MOTEL","PINE ROAD","EMPTY FIELD"] },
-    { key:"onecam", line:"One room. One camera.", tails:["TAKE","FRAME","CUT","STATIC","MIC","LIGHT STAND"] },
-    { key:"laundromat", line:"Late-night laundromat.", tails:["CHANGE MACHINE","SPIN CYCLE","DRYER 7","PLASTIC CHAIR","SOAP DISPENSER","FRONT WINDOW"] }
+    { key:"airport", line:"Airport after midnight." },
+    { key:"diner", line:"Diner after midnight." },
+    { key:"library", line:"Town library closing." },
+    { key:"bookstore", line:"Used bookstore closing." },
+    { key:"bus", line:"City bus route at night." },
+    { key:"hospital", line:"Hospital night shift." },
+    { key:"apartment", line:"Apartment building during a power outage." },
+    { key:"outdoor", line:"Outdoor movie night behind a community centre." },
+    { key:"roadtrip", line:"Long drive home." },
+    { key:"smalltown", line:"Small town in early spring." },
+    { key:"onecam", line:"One room. One camera." },
+    { key:"laundromat", line:"Late-night laundromat." }
   ];
 
   const CHARACTERS = {
@@ -644,25 +667,6 @@
     ]
   };
 
-  const BASE_LEFT = [
-    "APRIL","WINTER","QUIET","LAST","EMPTY","FADING","BROKEN","BLUE","SECOND","RETURN","STATIC",
-    "LOW","SOFT","MISSING","BACK","THIN","COLD","WIDE","SILENT","OPEN","CLOSED","FINAL","DUST",
-    "PORCH","HALLWAY","RECEIPT","LETTER","PROJECTOR","VENDING","LIBRARY","GATE","WINDOW","PAPER",
-    "KITE","GARAGE","BENCH","SIGNAL","MAP","ORDER","DRIVER","TURNAROUND","FIELD","PINE"
-  ];
-  const BASE_RIGHT = [
-    "LIGHT","MACHINE","HUM","CARD","TICKET","DATE","AISLE","SHELF","CLOCK","STRING","CHAIRS",
-    "DRIP","SCREEN","CUT","TAKE","STATIC","VOICEMAIL","JACKET","POSTER","BOARD","KEY","BENCH",
-    "HALLWAY","STAIRWELL","RETURN","ORDER","RECEIPT","SIGNAL","WINDOW","MAP","FIELD"
-  ];
-  const TIME_TAILS = ["APRIL","WINTER","SUMMER","AUTUMN","SPRING","SUNDAY","FRIDAY","SATURDAY","MIDNIGHT","NIGHT","DAWN","DUSK"];
-
-  function makeBase(){
-    const a = pick(BASE_LEFT);
-    const b = pick(BASE_RIGHT);
-    return dedupeWordRuns(`${a} ${b}`);
-  }
-
   function pickYear(bias){
     const r = Math.random();
     if (bias === "classic"){
@@ -685,22 +689,20 @@
   function generateBatch(n, eraBias, genreBias){
     const usedTitles = new Set();
     const usedCombos = new Set();
-
     let out = "Available Film Catalogue\n\n";
 
     for (let i = 0; i < n; i++){
       let tries = 0;
       let entry = "";
 
-      while (tries++ < 140){
+      while (tries++ < 160){
         const setting = pick(SETTINGS);
         const genre = pick(GENRES[genreBias] || GENRES.drama);
         const rating = /Experimental/.test(genre) ? pick(RATINGS_EXP) : pick(RATINGS);
         const year = pickYear(eraBias);
         const runtime = runtimeFor(genre);
 
-        const tail = chance(0.28) ? pick(TIME_TAILS) : pick(setting.tails);
-        const title = buildTitle(makeBase(), tail);
+        const title = makeTitle();
 
         const chars = pick(CHARACTERS[setting.key]);
         const prob  = pick(PROBLEMS[setting.key]);
@@ -741,7 +743,6 @@ ${synopsis}
   const $note = document.getElementById("note");
 
   let genreBias = "drama";
-
   function setChip(active){
     const ids = ["drama","mix","experimental"];
     ids.forEach(id => {
@@ -751,15 +752,17 @@ ${synopsis}
     genreBias = active;
   }
 
-  function clickChip(id){ setChip(id); }
-
   ["drama","mix","experimental"].forEach(id => {
     const el = document.getElementById("chip-" + id);
-    el.addEventListener("click", () => clickChip(id));
+    el.addEventListener("click", () => setChip(id));
     el.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); clickChip(id); }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setChip(id); }
     });
   });
+
+  // IMPORTANT: no initial output. Leave textarea blank until Generate.
+  $out.value = "";
+  $note.textContent = "";
 
   document.getElementById("generate").addEventListener("click", () => {
     const n = Math.max(1, Math.min(10, parseInt($count.value || "5", 10)));
@@ -778,9 +781,6 @@ ${synopsis}
       $note.textContent = "Copied.";
     }
   });
-
-  // initial output so it never looks dead
-  $out.value = generateBatch(5, "classic", "drama");
 })();
 </script>
 </body>
